@@ -39,7 +39,7 @@ def visualize_slice(volume, axis, index):
     plt.show()
 
 
-chemin_du_fichier = r"C:\Users\samga\OneDrive\Bureau\IXI230-IOP-0869-T2_brain.nii.gz"  
+chemin_du_fichier = r"cheminDuVolume"  
 try:
     volume = sitk.ReadImage(chemin_du_fichier)
     print("Volume chargé avec succès.")
