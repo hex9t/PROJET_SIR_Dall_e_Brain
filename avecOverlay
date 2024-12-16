@@ -1,0 +1,88 @@
+import SimpleITK as sitk
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+def charger_volume(chemin):
+    """Charge un volume depuis un fichier."""
+    if not os.path.exists(chemin):
+        raise FileNotFoundError(f"Le fichier spécifié n'existe pas : {chemin}")
+    try:
+        volume = sitk.ReadImage(chemin)
+        print(f"Volume chargé avec succès depuis : {chemin}")
+        return volume
+    except Exception as e:
+        raise ValueError(f"Erreur lors du chargement du fichier : {e}")
+
+def extraire_coupe(volume, axis, index):
+    """Extrait une coupe 2D d'un volume le long d'un axe donné."""
+    if axis not in [0, 1, 2]:
+        raise ValueError("L'axe doit être 0 (YZ), 1 (XZ) ou 2 (XY).")
+    
+    size = list(volume.GetSize())
+    if index < 0 or index >= size[axis]:
+        raise ValueError(f"L'indice doit être compris entre 0 et {size[axis] - 1} pour l'axe {axis}.")
+    
+    extractor = sitk.ExtractImageFilter()
+    size[axis] = 0
+    extractor.SetSize(size)
+    
+    index_list = [0, 0, 0]
+    index_list[axis] = index
+    extractor.SetIndex(index_list)
+    
+    return extractor.Execute(volume)
+
+def afficher_overlay(volume, segmentation, axis, index, alpha=0.5, cmap_image='gray', cmap_segmentation='jet'):
+    """
+    Affiche une coupe avec overlay entre un volume d'image et un volume de segmentation.
+    
+    :param volume: Volume d'imagerie principal.
+    :param segmentation: Volume de segmentation.
+    :param axis: Axe de la coupe (0, 1 ou 2).
+    :param index: Indice de la coupe.
+    :param alpha: Transparence pour la segmentation (0.0 = invisible, 1.0 = opaque).
+    :param cmap_image: Colormap pour le volume principal.
+    :param cmap_segmentation: Colormap pour la segmentation.
+    """
+    # Extraction des coupes
+    image_slice = extraire_coupe(volume, axis, index)
+    segmentation_slice = extraire_coupe(segmentation, axis, index)
+    
+    # Conversion en tableaux numpy
+    image_array = sitk.GetArrayViewFromImage(image_slice)
+    segmentation_array = sitk.GetArrayViewFromImage(segmentation_slice)
+    
+    # Vérification des dimensions
+    if image_array.shape != segmentation_array.shape:
+        raise ValueError("Les dimensions des volumes d'imagerie et de segmentation ne correspondent pas.")
+
+    # Affichage avec overlay
+    plt.figure(figsize=(6, 6))
+    plt.imshow(image_array, cmap=cmap_image, origin='lower')
+    plt.imshow(segmentation_array, cmap=cmap_segmentation, alpha=alpha, origin='lower')
+    plt.title(f"Overlay : Axe {axis}, Indice {index}")
+    plt.axis('on')
+    plt.xlabel('X (pixels)')
+    plt.ylabel('Y (pixels)')
+    plt.colorbar(label='Intensité (segmentation)', shrink=0.8)
+    plt.show()
+
+# Exemple d'utilisation
+chemin_volume =  # Remplacez par le chemin réel du volume principal
+chemin_segmentation =   # Remplacez par le chemin du volume de segmentation
+
+try:
+    # Chargement des volumes
+    volume = charger_volume(chemin_volume)
+    segmentation = charger_volume(chemin_segmentation)
+    
+    # Paramètres pour la visualisation
+    axis = 2  # Axe Z (XY plane)
+    index = 50  # Indice de la coupe
+    alpha = 0.5  # Transparence pour la segmentation
+    
+    # Affichage avec overlay
+    afficher_overlay(volume, segmentation, axis, index, alpha=alpha)
+except Exception as e:
+    print(f"Erreur : {e}")
