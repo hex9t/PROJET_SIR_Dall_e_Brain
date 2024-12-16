@@ -1,0 +1,34 @@
+import ants
+
+# Charger les volumes source et cible
+fixed_image_path =   # Chemin de l'image de référence (fixe)
+moving_image_path =   # Chemin de l'image à déplacer
+
+fixed_image = ants.image_read(fixed_image_path)
+moving_image = ants.image_read(moving_image_path)
+
+# Vérifier les dimensions des images
+print(f"Fixed image dimensions: {fixed_image.shape}")
+print(f"Moving image dimensions: {moving_image.shape}")
+
+# Appliquer le recalage avec une transformation linéaire (rigide ou affine)
+registration_result = ants.registration(
+    fixed=fixed_image,
+    moving=moving_image,
+    type_of_transform="Affine"  # Utiliser "Rigid" pour une transformation rigide
+)
+
+# Extraire l'image recalée
+warped_moving_image = registration_result['warpedmovout']
+
+# Enregistrer l'image recalée
+output_path =  #chemin cible
+ants.image_write(warped_moving_image, output_path)
+print(f"Recalage terminé. Image recalée enregistrée à : {output_path}")
+
+# (Optionnel) Enregistrer la matrice de transformation
+if 'fwdtransforms' in registration_result:
+    affine_transform_path = #chemin cible de la matrice
+    with open(affine_transform_path, 'w') as f:
+        f.write('\n'.join(registration_result['fwdtransforms']))
+    print(f"Matrice de transformation affine enregistrée à : {affine_transform_path}")
