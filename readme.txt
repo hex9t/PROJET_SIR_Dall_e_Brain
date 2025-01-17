@@ -14,7 +14,7 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
    - IXI035-IOP-0873-T2_brain_majorityInverse.nii.gz
    - 307598 IXI035-IOP-0873-T2_majorityDirect.nii.gz
 
-   ![Image comparant les deux Atlas](./images/ixi.png)
+   ![Image comparant les deux Atlas](images/ixi.png)
 
 3. **Construction de Légendes pour Volumes 3D** :  
    Nous générons des captions pour des volumes d'images 3D, une tâche essentielle pour la création de notre base de données d'entraînement. Le code utilisé pour cette tâche se trouve dans le répertoire ci-dessus.
