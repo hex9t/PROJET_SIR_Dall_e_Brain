@@ -26,5 +26,49 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 ### Structure du Projet
 
 - `scripts/` : Contient les scripts de traitement et d'analyse des données.
+## 📝 Description du Code
+
+Ce script Python est conçu pour comparer deux atlas 3D au format NIfTI en évaluant leur similarité à l'aide des métriques **Dice** et **IoU** (Intersection over Union) pour chaque étiquette présente dans les atlas.
+
+---
+
+### 🔍 Fonctionnalités Principales
+
+1. **Chargement d'Atlas NIfTI** :  
+   Le script utilise la bibliothèque `nibabel` pour charger des fichiers au format NIfTI et les convertir en tableaux NumPy.
+
+2. **Calcul des Scores Dice et IoU** :  
+   - **Dice** mesure le degré de similitude entre deux ensembles binaires.
+   - **IoU** mesure l'intersection relative à l'union des ensembles.
+   Ces scores sont calculés pour chaque étiquette présente dans les deux atlas.
+
+3. **Visualisation des Résultats** :  
+   Les scores Dice et IoU sont représentés sous forme de graphique à barres pour une interprétation facile.
+
+---
+
+### 📂 Organisation des Fonctions
+
+- `load_atlas(path)`:  
+  Charge un fichier atlas au format NIfTI et retourne un tableau NumPy.
+
+- `calculate_label_dice_iou(atlas1, atlas2, labels)`:  
+  Calcule les scores Dice et IoU pour chaque étiquette commune entre deux atlas.
+
+- `main()`:  
+  - Vérifie les arguments passés en ligne de commande.  
+  - Charge les atlas à comparer.  
+  - Extrait les étiquettes communes.  
+  - Calcule les scores de cohérence (Dice et IoU).  
+  - Affiche les résultats sous forme de tableau et de graphique.
+
+---
+
+### 🚀 Instructions d'Utilisation
+
+1. Assurez-vous d'avoir installé les bibliothèques nécessaires :
+   ```bash
+   pip install nibabel numpy matplotlib
+
 
 
