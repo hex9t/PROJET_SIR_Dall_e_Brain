@@ -26,49 +26,56 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 ### Structure du Projet
 
 - `scripts/` : Contient les scripts de traitement et d'analyse des données.
-## 📝 Description du Code
+Voici un fichier complet README.md avec les modifications demandées :
 
-Ce script Python est conçu pour comparer deux atlas 3D au format NIfTI en évaluant leur similarité à l'aide des métriques **Dice** et **IoU** (Intersection over Union) pour chaque étiquette présente dans les atlas.
+markdown
+Copier
+Modifier
+# 🧠 Code Comparaison Atlas
 
----
-
-### 🔍 Fonctionnalités Principales
-
-1. **Chargement d'Atlas NIfTI** :  
-   Le script utilise la bibliothèque `nibabel` pour charger des fichiers au format NIfTI et les convertir en tableaux NumPy.
-
-2. **Calcul des Scores Dice et IoU** :  
-   - **Dice** mesure le degré de similitude entre deux ensembles binaires.
-   - **IoU** mesure l'intersection relative à l'union des ensembles.
-   Ces scores sont calculés pour chaque étiquette présente dans les deux atlas.
-
-3. **Visualisation des Résultats** :  
-   Les scores Dice et IoU sont représentés sous forme de graphique à barres pour une interprétation facile.
+Ce script compare deux atlas 3D au format NIfTI en calculant les métriques **Dice** et **IoU** pour chaque étiquette commune entre les deux. Les résultats sont affichés dans le terminal et sous forme de graphique.
 
 ---
 
-### 📂 Organisation des Fonctions
+## ✨ Fonctionnalités
 
-- `load_atlas(path)`:  
-  Charge un fichier atlas au format NIfTI et retourne un tableau NumPy.
-
-- `calculate_label_dice_iou(atlas1, atlas2, labels)`:  
-  Calcule les scores Dice et IoU pour chaque étiquette commune entre deux atlas.
-
-- `main()`:  
-  - Vérifie les arguments passés en ligne de commande.  
-  - Charge les atlas à comparer.  
-  - Extrait les étiquettes communes.  
-  - Calcule les scores de cohérence (Dice et IoU).  
-  - Affiche les résultats sous forme de tableau et de graphique.
+- Chargement d'atlas NIfTI avec `nibabel`.
+- Calcul des scores **Dice** (similitude) et **IoU** (intersection/union) pour chaque étiquette.
+- Visualisation des résultats avec `matplotlib`.
 
 ---
 
-### 🚀 Instructions d'Utilisation
+## 🚀 Utilisation
 
-1. Assurez-vous d'avoir installé les bibliothèques nécessaires :
+1. Installer les dépendances :
    ```bash
    pip install nibabel numpy matplotlib
+Lancer le script :
 
+bash
+Copier
+Modifier
+python script.py <chemin_atlas1> <chemin_atlas2>
+Exemple d'exécution :
 
+bash
+Copier
+Modifier
+python script.py atlas1.nii atlas2.nii
+🔑 Code Principal
+Voici une partie clé du code, responsable du calcul des scores Dice et IoU pour chaque étiquette :
 
+python
+Copier
+Modifier
+def calculate_label_dice_iou(atlas1, atlas2, labels):
+    results = {}
+    for label in labels:
+        binary1 = (atlas1 == label).astype(int)
+        binary2 = (atlas2 == label).astype(int)
+        intersection = np.logical_and(binary1, binary2).sum()
+        union = np.logical_or(binary1, binary2).sum()
+        dice = 2 * intersection / (binary1.sum() + binary2.sum() + 1e-6)
+        iou = intersection / (union + 1e-6)
+        results[label] = {"Dice": dice, "IoU": iou}
+    return results
