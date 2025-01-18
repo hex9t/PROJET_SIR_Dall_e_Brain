@@ -2,7 +2,7 @@
 ![Image comparant les deux Atlas](data/readmeFILES/images/logo.png)
 
 Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet_SIR](https://github.com/GLucas01/projet_SIR) pour construire une base de données afin d'appliquer le deep learning et générer des images de cerveaux à partir de prompts textuels. 
-
+![Image comparant les deux Atlas](images/code.png)
 ### Tâches principales :
 
 1. **Correction et Enrichissement de la Base de Données** :  
