@@ -26,6 +26,5 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 ### Structure du Projet
 
 - `scripts/` : Contient les scripts de traitement et d'analyse des données.
-- `data/` : Dossier contenant les fichiers d'images et les fichiers de légendes au format JSON.
-- `notebooks/` : Jupyter Notebooks pour l'analyse exploratoire des données et la visualisation des résultats.
-- `results/` : Dossier pour stocker les résultats de l'analyse, y compris les images comparées et les légendes générées.
+
+
