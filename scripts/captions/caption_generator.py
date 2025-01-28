@@ -6,7 +6,9 @@ import os
 import argparse
 
 
-###############################################
+##############################################################################################################################
+# exemple de faire: python caption_generator.py dossier_images_3D dossier_3D_desciption dossier_avec_info_data output
+# exemple de faire: python caption_generator.py OASIS description_3d_oasis metafolder captions_oasis
 def generate_human_like_caption(image_filename, structures_file, metadata_file, output_file, image_type):
     # Extract ID and type from image filename using regex
     match = None
