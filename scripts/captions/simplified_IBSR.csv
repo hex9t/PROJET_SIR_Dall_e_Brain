@@ -1,5 +1,5 @@
 ID,Labels,Description,RGB
-0,Unknown,[0 0 0]
+0,0,Unknown,[0 0 0]
 1,"2, 41",White matter of cerebral hemispheres,"[225 225 225], [0 225 0]"
 2,"3, 42",Cortex of cerebral hemispheres,[205 62 78]
 3,"4, 43",Lateral ventricles,[120 18 134]
