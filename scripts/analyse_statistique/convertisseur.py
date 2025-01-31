@@ -3,7 +3,7 @@ import json
 import csv
 import sys
 
-##### Usage: python3 statistiques_cerveux.py input_folder
+##### Usage: python3 statistiques_cerveux.py input_folder (on linux)
 ##### This program is only suitable for converting statistical analysis data json file into csv file
 
 def json_to_csv(json_file, output_folder):
