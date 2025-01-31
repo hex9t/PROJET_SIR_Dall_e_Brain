@@ -2,6 +2,9 @@ import json
 import matplotlib.pyplot as plt
 import os
 
+##### example of excution the programme:  python3 boite_a_moustache.py (on Linux)
+##### need to change to the right input/output path in line 68 and 69
+
 def load_json_data(json_file):
     """Load data from a JSON file"""
     with open(json_file, 'r', encoding='utf-8') as file:
@@ -61,7 +64,7 @@ def generate_boxplots_from_folder(json_folder, output_folder):
                 label_name = label_data["label_name"]
                 plot_boxplot(label_data, label_id, database_name, label_name, output_folder)
 
-# Example call
+# Call the fonction
 json_folder = "./data/Brain_Statistics"  # Replace with your JSON folder path
 output_folder = "./data/boxplots/"  # Replace with your output folder path
 generate_boxplots_from_folder(json_folder, output_folder)
