@@ -32,19 +32,34 @@ def json_to_csv(json_file, output_folder):
         records = []
         for key, values in data.items():
             if key == "Group":
-                continue  
+                continue  # Skip the Group metadata
 
             if isinstance(values, dict):  # Ensure it's a dictionary
-                entry = {"Region_ID": key, "Group": group_name}  # Add metadata
-                entry.update(values)  # Merge other attributes
-
-                # Convert outliers list into a comma-separated string
-                if "outliers" in entry and isinstance(entry["outliers"], list):
-                    entry["outliers"] = ", ".join(map(str, entry["outliers"]))
-
+                entry = {
+                    "Group": group_name,  # Add metadata
+                    "Region_ID": key,  # Use region ID as a field
+                    "label_name": values.get("label_name", ""),  # Structure name
+                    "avg_volume (mm³)": values.get("avg_volume (mm³)", ""),
+                    "std_volume (mm³)": values.get("std_volume (mm³)", ""),
+                    "avg_ratio_vol_totvol (%)": values.get("avg_ratio_vol_totvol (%)", ""),
+                    "ratio_std_avg (%)": values.get("ratio_std_avg (%)", ""),
+                    "min": values.get("min", ""),
+                    "max": values.get("max", ""),
+                    "Q1": values.get("Q1", ""),
+                    "Q2": values.get("Q2", ""),
+                    "Q3": values.get("Q3", ""),
+                    "IQR": values.get("IQR", ""),
+                    "outliers": ", ".join(map(str, values.get("outliers", [])))  # Convert list to string
+                }
                 records.append(entry)
 
-        headers = sorted(set().union(*(record.keys() for record in records)))
+        # Define a fixed logical column order
+        headers = [
+            "Group", "Region_ID", "label_name",
+            "avg_volume (mm³)", "std_volume (mm³)", "avg_ratio_vol_totvol (%)", "ratio_std_avg (%)",
+            "min", "max", "Q1", "Q2", "Q3", "IQR",
+            "outliers"
+        ]
 
         # Write data to CSV file
         with open(csv_file, 'w', newline='', encoding='utf-8') as file:
@@ -80,7 +95,6 @@ def process_folder(folder_path):
         json_to_csv(os.path.join(folder_path, json_file), output_folder)
 
 if __name__ == "__main__":
-    # Check if the script receives a folder path as an argument
     if len(sys.argv) != 2:
         print("Usage: python3 convertisseur.py folder_name")
     else:
