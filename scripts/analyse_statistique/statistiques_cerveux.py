@@ -6,8 +6,8 @@ from collections import defaultdict
 import statistics
 import numpy as np
 
-#####  an example of excution the programme:  python3 statistiques_cerveux.py ./Data_analyse/Kirby_seg/csv_files/ (on Linux)
-##### need to change line 133,134,142 to modify the correct path
+##### example of excution the programme:  python3 statistiques_cerveux.py ./Data_analyse/Kirby_seg/csv_files/ (on Linux) (the input files are the csv files)
+##### need to change line 133,134,142 to modify the correct path.
 
 def process_age(age):
     """
