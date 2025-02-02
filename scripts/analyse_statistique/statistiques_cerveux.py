@@ -6,8 +6,8 @@ from collections import defaultdict
 import statistics
 import numpy as np
 
-##### example of excution the programme:  python3 statistiques_cerveux.py ./Data_analyse/Kirby_seg/csv_files/ (on Linux) (the input files are the csv files)
-##### need to change line 133,134,142 to modify the correct path.
+##### example of excution the programme:  python3 statistiques_cerveux.py ./Data_analyse/Kirby_seg/csv_files/ (on Linux)
+##### need to change line 166,167,175 to modify to the correct path.
 
 def process_age(age):
     """
@@ -119,6 +119,39 @@ def calculate_statistics(data, anatomie_template):
     
     return sorted_results
 
+def calculate_total_statistics(total_volumes):
+    """
+    Calculates statistical measures for the total of brain structure volumes and ratios. 
+    """
+    if not total_volumes:
+        return {}
+
+    avg_volume = statistics.mean(total_volumes)
+    std_volume = statistics.pstdev(total_volumes)
+    avg_ratio = 100.0 
+    ratio_std_avg = (std_volume / avg_volume) * 100 if avg_volume > 0 else 0.0
+
+    q1, q2, q3 = np.percentile(total_volumes, [25, 50, 75])
+    iqr = q3 - q1
+    min_val = min([v for v in total_volumes if v >= q1 - 1.5 * iqr], default=min(total_volumes))
+    max_val = max([v for v in total_volumes if v <= q3 + 1.5 * iqr], default=max(total_volumes))
+    outliers = [v for v in total_volumes if v < q1 - 1.5 * iqr or v > q3 + 1.5 * iqr]
+
+    return {
+        "label_name": "Total brain",
+        "avg_volume (mm³)": avg_volume,
+        "std_volume (mm³)": std_volume,
+        "avg_ratio_vol_totvol (%)": avg_ratio,
+        "ratio_std_avg (%)": ratio_std_avg,
+        "min": min_val,
+        "max": max_val,
+        "Q1": q1,
+        "Q2": q2,
+        "Q3": q3,
+        "IQR": iqr,
+        "outliers": outliers
+    }
+
 def save_to_json(filename, data, base_name):
     """
     Saves the computed statistics into a JSON file.
@@ -130,8 +163,8 @@ def save_to_json(filename, data, base_name):
         json.dump({"Group": group_name, **data}, file, indent=4, ensure_ascii=False)
 
 # Define input file paths
-input_info_path = "./data/Keywords/IBSR_info.csv"   # Path to subject info CSV
-input_anatomie_csv = "./data/Keywords/Anatomie_IBSR.csv"  # Path to anatomical labels CSV
+input_info_path = "./data/Keywords/IXI_info.csv"   # Path to subject info CSV
+input_anatomie_csv = "./data/Keywords/Simplified_anatomie_IBSR.csv"  # Path to anatomical labels CSV
 
 if len(sys.argv) < 2:
     print("Usage: python3 statistiques_cerveux.py <input_folder>")
@@ -139,7 +172,7 @@ if len(sys.argv) < 2:
 
 input_folder = sys.argv[1]
 anatomie_template = load_anatomie(input_anatomie_csv)
-output_folder = './data/IBSR/seg_statistiques/'  # Output folder path
+output_folder = './data/IXI/seg_statistiques/'  # Output folder path
 os.makedirs(output_folder, exist_ok=True)
 
 base_name = os.path.normpath(output_folder).split(os.sep)[1]
@@ -147,6 +180,11 @@ base_name = os.path.normpath(output_folder).split(os.sep)[1]
 # Categorize IDs based on gender and age
 categories = collect_ids_by_category(input_info_path)
 grouped_volumes = {group: [] for group in categories}
+grouped_volumes["Overall"] = []
+
+# Store the total volume of brain for each file
+group_total_volumes = {group: [] for group in categories}
+group_total_volumes["Overall"] = []
 
 # Process each CSV file in the input folder
 for csv_file in os.listdir(input_folder):
@@ -166,11 +204,20 @@ for csv_file in os.listdir(input_folder):
                     "volume_mm3": float(row["Volume (mm³)"]),
                     "volume_ratio": float(row["Volume Ratio (%)"]),
                 }
-        
+
+        subject_total = sum(d["volume_mm3"] for lid, d in file_data.items() if lid != 0)
+
         for group, ids in categories.items():
             if file_id in ids:
                 grouped_volumes[group].extend([(lid, d["volume_mm3"], d["volume_ratio"]) for lid, d in file_data.items()])
-
+                group_total_volumes[group].append(subject_total)
+    
+    grouped_volumes["Overall"].extend([(lid, d["volume_mm3"], d["volume_ratio"]) for lid, d in file_data.items()])
+    group_total_volumes["Overall"].append(subject_total)
+    
 # Save statistics for each category
 for group, volumes in grouped_volumes.items():
-    save_to_json(f'{group}_statistics.json', calculate_statistics(volumes, anatomie_template), base_name)
+    stats = calculate_statistics(volumes, anatomie_template)
+    total_stats = calculate_total_statistics(group_total_volumes[group])
+    stats["Total"] = total_stats
+    save_to_json(f'{group}_statistics.json', stats, base_name)
