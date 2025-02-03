@@ -33,51 +33,7 @@ def calculate_top_variance_structures(csv_folder, n):
     top_structures = sorted(variance_results.items(), key=lambda x: x[1], reverse=True)[:n]
     return [label for label, _ in top_structures]
 
-def process_folder(folder_path, csv_folder, metadata_folder, output_folder, selection=None, size=None, var=None):
-    # Calculate top variance structures if var is specified
-    top_variance_structures = calculate_top_variance_structures(csv_folder, var) if var else None
 
-    os.makedirs(output_folder, exist_ok=True)
-
-    for file_name in os.listdir(folder_path):
-        if file_name.endswith(".nii.gz"):
-            image_path = os.path.join(folder_path, file_name)
-
-            if "KKI2009" in file_name:
-                image_type = "Kirby"
-                metadata_file = os.path.join(metadata_folder, "Kirby_info.csv")
-            elif "OAS1" in file_name:
-                image_type = "Oasis"
-                metadata_file = os.path.join(metadata_folder, "OASIS_info.csv")
-            elif "IBSR" in file_name:
-                image_type = "IBSR"
-                metadata_file = os.path.join(metadata_folder, "IBSR_info.csv")
-            elif "IXIID-IOP" in file_name:
-                image_type = "IXI"
-                metadata_file = os.path.join(metadata_folder, "IXI_info.csv")
-            else:
-                print(f"Unknown dataset type for image: {file_name}")
-                continue
-
-            base_name = os.path.splitext(file_name)[0]
-            corresponding_csv = None
-            for csv_file in os.listdir(csv_folder):
-                if csv_file.startswith(base_name):
-                    corresponding_csv = os.path.join(csv_folder, csv_file)
-                    break
-
-            if not corresponding_csv:
-                print(f"No corresponding CSV found for image: {file_name}")
-                continue
-
-            output_file = os.path.join(output_folder, f"{base_name}_captions.json")
-            try:
-                generate_human_like_caption(
-                    image_path, corresponding_csv, metadata_file, output_file, image_type, selection, size, top_variance_structures
-                )
-                print(f"Processed: {file_name} with {os.path.basename(corresponding_csv)}")
-            except Exception as e:
-                print(f"Error processing {file_name}: {e}")
 def generate_human_like_caption(image_filename, structures_file, metadata_file, output_file, image_type, selection=None, size=None):
     # Extract ID and type from image filename using regex
     match = None
@@ -88,10 +44,10 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
         match = re.search(r'OAS1_(\d+)_([A-Za-z0-9\-]+)', image_filename)
         scan_type = "T1"
     elif image_type == "IBSR":
-        match = re.search(r'IBSR_(\d+)-([A-Z]+)', image_filename)
+        match = re.search(r'IBSR_(\d+)_(.+)', image_filename)
         scan_type = "T1"
     elif image_type == "IXI":
-        match = re.search(r'IXI(\d+)-IOP-\d+-[A-Za-z0-9\-]+_majority', image_filename)
+        match = re.search(r'IXI(\d+)-IOP-\d+-([A-Z]+)', image_filename)
         scan_type = "T2"
 
     if not match:
@@ -127,10 +83,11 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
     # Generate list of structures with volumes and percentages
     structures_with_volumes = []
     for _, row in filtered_structures.iterrows():
+        structure_id = row['ID']
         label = row['Label']
         structure_volume = row['Voxel Volume (mm³)']
         percentage = round((row['Voxel Count'] / total_voxels) * 100, 2)
-        structures_with_volumes.append({"label": label, "volume": structure_volume, "percentage": percentage})
+        structures_with_volumes.append({"id": structure_id, "label": label, "volume": structure_volume, "percentage": percentage})
 
     # Sort structures by volume (descending order)
     sorted_structures = sorted(structures_with_volumes, key=lambda x: x['volume'], reverse=True)
@@ -141,13 +98,9 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
 
     # Handle selection argument
     if selection is not None:
-        selected_structures = []
-        selection = [int(s) for s in selection.split()]
-        for index in selection:
-            if 1 <= index <= len(sorted_structures):
-                selected_structures.append(sorted_structures[index - 1])
+        selected_structures = [s for s in sorted_structures if int(s['id']) in selection]  # Utilisation de ID au lieu de label
+        print(f"Final selected structures based on ID: {[s['id'] for s in selected_structures]}")
         sorted_structures = selected_structures
-
     # Define sentence templates
     templates = [
         "This {scan_type} scan shows a {gender} subject aged {age} with dimensions {dimensions}. Brain volume is {brain_volume:.2f} cm³. The most prominent structures are {structures}.",
@@ -209,7 +162,7 @@ def process_folder(folder_path, csv_folder, metadata_folder, output_folder, sele
             elif "IBSR" in file_name:
                 image_type = "IBSR"
                 metadata_file = os.path.join(metadata_folder, "IBSR_info.csv")
-            elif "IXIID-IOP" in file_name:
+            elif "IXI" in file_name:  # Corrigé ici
                 image_type = "IXI"
                 metadata_file = os.path.join(metadata_folder, "IXI_info.csv")
             else:
@@ -229,11 +182,10 @@ def process_folder(folder_path, csv_folder, metadata_folder, output_folder, sele
                 continue
 
             output_file = os.path.join(output_folder, f"{base_name}_captions.json")
-            try:
-                generate_human_like_caption(image_path, corresponding_csv, metadata_file, output_file, image_type, selection, size)
-                print(f"Processed: {file_name} with {os.path.basename(corresponding_csv)}")
-            except Exception as e:
-                print(f"Error processing {file_name}: {e}")
+  
+            generate_human_like_caption(image_path, corresponding_csv, metadata_file, output_file, image_type, selection, size)
+            print(f"Processed: {file_name} with {os.path.basename(corresponding_csv)}")
+          
 
 
 if __name__ == "__main__":
@@ -245,13 +197,17 @@ if __name__ == "__main__":
     parser.add_argument("csv_folder", type=str, help="Path to the folder containing CSV files")
     parser.add_argument("metadata_folder", type=str, help="Path to the metadata folder")
     parser.add_argument("output_folder", type=str, help="Path to save the JSON files")
-    parser.add_argument("--selection", type=str, help="Selection of structures (e.g., '1 2 3')", default=None)
+    parser.add_argument("--selection", type=int, nargs="+", help="Selection of structure IDs (e.g., 4 56 14 8 9)", default=None)
     parser.add_argument("--size", type=int, help="Number of top structures to display", default=None)
     parser.add_argument("--var", type=int, help="Number of structures with the highest variance to display", default=None)
 
     
     # Parse les arguments passés dans la ligne de commande
     args = parser.parse_args()
+    
+    # Appelle la fonction pour générer les légendes avec les dossiers fournis en arguments
+    process_folder(args.input_folder, args.csv_folder, args.metadata_folder, args.output_folder, args.selection, args.size)
+
     
     # Appelle la fonction pour générer les légendes avec les dossiers fournis en arguments
     process_folder(args.input_folder, args.csv_folder, args.metadata_folder, args.output_folder, args.selection, args.size)
