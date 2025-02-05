@@ -31,13 +31,29 @@ Enfin, nous appliquons le script MajorityVoting.py, qui exécute le processus de
 
 Cette étape est cruciale, car elle nous permet de déterminer si les deux atlas sont similaires ou non. Pour cela, un script nommé COMPARAISON.py a été créé. Son principal objectif est de comparer deux images segmentées, c'est-à-dire les deux segments d'une même image. Il applique ensuite les métriques IoU, DICE et la distance de Hausdorff sur chaque label de ces segments. Ce processus est répété pour toutes les paires, et enfin, trois graphes sont générés, présentant la moyenne des métriques sur l’ensemble des paires. Sur ces graphes, l’axe des ordonnées représente la valeur de la métrique, tandis que l’axe des abscisses représente les labels.
 
-**IXI:**
+**Les résultats de comparaison pour IXI:**
 
 ![DiceIXI](https://github.com/user-attachments/assets/42d65526-54a1-40ca-8723-916219843441)
 
 ![HausdorffIXI](https://github.com/user-attachments/assets/252c6a90-9895-4d1d-9a6d-ecb3decf86f0)
 
 ![IoUIXI](https://github.com/user-attachments/assets/cc7ae813-0c62-4844-94ec-065e91541787)
+
+**Les résultats de comparaison pour OASIS:**
+
+![DiceOasis](https://github.com/user-attachments/assets/f1ae8424-8bac-4012-8831-7666733e2d43)
+
+![HausdorffOasis](https://github.com/user-attachments/assets/3a07e213-1d7f-4525-99fd-73aa2b97de8c)
+
+![IoUOasis](https://github.com/user-attachments/assets/e1bdfad1-7769-429c-9e68-a5085a810ebc)
+
+**Les résultats de comparaison pour Kirby:**
+
+![DiceKirby](https://github.com/user-attachments/assets/a9bb3bbd-3ced-4814-a60b-1b07778018bc)
+
+![HausdorffKirby](https://github.com/user-attachments/assets/fd463dab-f619-4a2f-b2d6-bc7b779c841a)
+
+![IoUKirby](https://github.com/user-attachments/assets/baf85831-e78b-49fb-949e-66dbb3e54154)
 
 3. **Construction de Légendes pour Volumes 3D** :  
    Nous générons des captions pour des volumes d'images 3D, une tâche essentielle pour la création de notre base de données d'entraînement. Le code utilisé pour cette tâche se trouve dans le répertoire ci-dessus.
