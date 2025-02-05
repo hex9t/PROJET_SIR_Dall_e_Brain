@@ -10,21 +10,22 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 │   │   ├── Kirby  
 │   │   │   ├── brain  
 │   │   │   ├── NG  
-│   │   │   └── descriptions  
-            └── descriptions_simple 
-            └── captions_3d_simple 
-            └── captions_3d 
-     ├── statistiques     
-              ├──IBSR
-              ├──OASIS
-              ├──Kirby
-              ├──IXI
-- `descriptions` : contient les descriptions des images avec ANATOMIE_IBSR.info.csv
-- `descriptions_simple` : contient les descriptions des images avec simplified_IBSR.info.csv
-- `captions_3d` : contient les captions générés avec captions_generator_advanced.py
-- `captions_3d_simple` : contient les captions générés avec simple_captions.py
-- - `statistiques ` : contient des statistiques sur la base de données   
-              
+│   │   │   ├── descriptions  
+│   │   │   ├── descriptions_simple  
+│   │   │   ├── captions_3d_simple  
+│   │   │   └── captions_3d  
+│   ├── statistiques     
+│   │   ├── IBSR  
+│   │   ├── OASIS  
+│   │   ├── Kirby  
+│   │   └── IXI  
+
+- `descriptions` : contient les descriptions des images avec **ANATOMIE_IBSR.info.csv**  
+- `descriptions_simple` : contient les descriptions des images avec **simplified_IBSR.info.csv**  
+- `captions_3d` : contient les captions générés avec **captions_generator_advanced.py**  
+- `captions_3d_simple` : contient les captions générés avec **simple_captions.py**  
+- `statistiques` : contient des statistiques sur la base de données  
+
 ### Tâches principales :
 
    1. **Complétion des bases de données** :  
