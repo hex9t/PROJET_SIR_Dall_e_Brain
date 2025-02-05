@@ -35,3 +35,24 @@ Sur un système Linux, vous pouvez exécuter le programme avec la commande suiva
 ```bash
 python3 statistiques_cerveux.py input_folder
 ```
+# Analyse Statistique du Cerveau - Volume et Ratio par Groupe
+
+## Description
+Ce programme Python analyse les volumes des structures cérébrales et calcule diverses statistiques, telles que la moyenne, l'écart-type, les quartiles, l'intervalle interquartile (IQR), ainsi que l'identification des valeurs aberrantes pour chaque région du cerveau. Les données sont regroupées par sexe et groupe d'âge. Le programme traite des fichiers CSV contenant des informations sur les volumes des régions cérébrales, puis génère des fichiers JSON contenant les statistiques par groupe.
+
+## Prérequis
+Avant d'exécuter ce programme, assurez-vous que Python est installé sur votre machine. Le programme utilise les bibliothèques suivantes :
+
+- `csv` (inclus par défaut dans Python)
+- `os` (inclus par défaut dans Python)
+- `json` (inclus par défaut dans Python)
+- `sys` (inclus par défaut dans Python)
+- `collections` (inclus par défaut dans Python)
+- `statistics` (inclus par défaut dans Python)
+- `numpy` (bibliothèque externe à installer)
+
+## Installation de `numpy`
+Si vous ne disposez pas de la bibliothèque `numpy`, installez-la avec la commande suivante :
+
+```bash
+pip install numpy
