@@ -8,14 +8,10 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 1. **Correction et Enrichissement de la Base de Données** :  
    Notre objectif est d'améliorer la base de données déjà existante en y apportant des corrections et en l'enrichissant avec des données supplémentaires. Cela inclut également la préparation de captions pour des volumes d'images 3D.
 
-2. **Comparaison des Atlas** :  
-   Nous comparons deux Atlas pour déterminer s'ils sont similaires ou différents. Pour cela, nous utilisons des techniques de "recallage" direct et indirect. Les métriques utilisées pour cette comparaison sont le **Dice coefficient** et l'**Intersection over Union (IoU)**. Vous trouverez les scripts relatifs à cette tâche ci-dessous.
+2. **Création des nouveaux atlas** :  
+  En plus des atlas obtenus par recalage inverse sur les 18 images IBSR avec leurs segments, nous créons également des atlas selon un autre processus. Nous effectuons un recalage direct des 18 images IBSR sur les images cérébrales (sans boîte crânienne) de la base que nous souhaitons segmenter. Ensuite, en utilisant les fichiers .mat de ces recalages, nous parvenons à recaler uniquement les 18 segments IBSR afin d'obtenir la segmentation des images que nous voulons traiter.
+![18 images IBSR brain](https://github.com/user-attachments/assets/f437ccf4-a82e-4026-bef2-be75f6a423ee)
 
-   Exemple de comparaison entre les deux Atlas obtenus par :
-   - IXI035-IOP-0873-T2_brain_majorityInverse.nii.gz
-   - 307598 IXI035-IOP-0873-T2_majorityDirect.nii.gz
-
-   ![Image comparant les deux Atlas](images/ixi.png)
 
 3. **Construction de Légendes pour Volumes 3D** :  
    Nous générons des captions pour des volumes d'images 3D, une tâche essentielle pour la création de notre base de données d'entraînement. Le code utilisé pour cette tâche se trouve dans le répertoire ci-dessus.
