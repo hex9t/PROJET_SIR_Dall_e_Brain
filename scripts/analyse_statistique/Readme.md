@@ -13,7 +13,7 @@ Vous pouvez installer `matplotlib` via pip :
 
 ```bash
 pip install matplotlib
-
+```
 # Convertisseur JSON en CSV - Analyse Statistique du Cerveau
 
 ## Description
@@ -34,3 +34,4 @@ Sur un système Linux, vous pouvez exécuter le programme avec la commande suiva
 
 ```bash
 python3 statistiques_cerveux.py input_folder
+```
