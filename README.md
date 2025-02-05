@@ -4,7 +4,7 @@
 Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet_SIR](https://github.com/GLucas01/projet_SIR) pour construire une base de données afin d'appliquer le deep learning et générer des images de cerveaux à partir de prompts textuels. 
 ![Image comparant les deux Atlas](images/code.png)
 ## Structure de la base de données (sur disque dure)
-### Arborescence utilisée
+### Nouvelle Arborescence utilisée
 ├── SIR  
 │   ├── FL  
 │   │   ├── Kirby  
