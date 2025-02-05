@@ -79,15 +79,45 @@ Cette étape est cruciale, car elle nous permet de déterminer si les deux atlas
 
 ![IoUKirby](https://github.com/user-attachments/assets/baf85831-e78b-49fb-949e-66dbb3e54154)
 
-   3. **Construction de Légendes pour Volumes 3D** :  
-   Nous générons des captions pour des volumes d'images 3D, une tâche essentielle pour la création de notre base de données d'entraînement. Le code utilisé pour cette tâche se trouve dans le répertoire ci-dessus.
+   
+# Construction de Légendes pour Volumes 3D
 
-   Exemple pour le fichier `KKI2009-1-FLAIR_brainMajorityDirect.nii` :
-   - Fichier JSON associé : [lien_vers_le_fichier.json](data/readmeFILES/caption.json)
+## Description du processus
 
-### Structure du Projet
+Cette section explique comment utiliser les codes pour générer des légendes (captions) pour les volumes 3D.
 
-- `scripts/` : Contient les scripts de traitement et d'analyse des données.
+### 1. Générer les Descriptions
+
+Pour commencer, il est essentiel d’avoir des descriptions. Pour cela, utilisez le script `description_generator.py` avec la commande suivante :
+
+```bash
+python script.py "SIR/statistiques/IBSR/labels.csv" "SIR/FL/Kirby/brain" "SIR/FL/Kirby/descriptions"
+```
+
+Les résultats seront enregistrés dans le dossier `descriptions`. Ces fichiers pourront ensuite être utilisés pour générer les légendes avec le script `caption_generator_advanced.py` comme suit :
+
+```bash
+python caption_generator_advanced.py data_kirby descriptions_3D ./metafolder/ captions_test --var 5
+```
+
+**Attention** : Les résultats générés avec cette méthode ne sont pas parfaits et ne répondent pas entièrement aux exigences des légendes. Il est donc préférable d’utiliser le script `simple_captions.py` pour obtenir des résultats de meilleure qualité.
+
+### 2. Générer des Descriptions Simples
+
+Avant d'utiliser `simple_captions.py`, il est nécessaire de créer des descriptions simples. Utilisez le script `simple_descriptions.py` pour cela. Vous devrez seulement ajuster les chemins au début du code pour qu’ils pointent vers le dossier `descriptions`.
+
+Une fois que les nouveaux fichiers CSV sont générés, vous pouvez ensuite exécuter le script `simple_captions.py` pour créer des légendes plus détaillées et adaptées. Voici un exemple de commande :
+
+```bash
+python simple_captions.py D:\SIR\T2\IXI\seg D:\SIR\T2\IXI\descriptions_simple .\metafolder\ D:\SIR\T2\IXI\captions_3d_simple\captions_exhaustive
+```
+
+**Important** : N’oubliez pas de **changer manuellement** la modalité des légendes à la sortie, car nous n’avons pas eu le temps de l’adapter pour chaque base de données. Cette modification se fait dans la variable `a` de la fonction `process_folder()`.
+
+### 3. Dossier des Métadonnées
+
+Enfin, veillez à ne pas oublier d’inclure le dossier des métadonnées dans vos répertoires de travail.
+
   
 
 
