@@ -1,0 +1,34 @@
+ID,Label,RGB,Voxel Count,Voxel Volume (mm³),Volume Ratio (%)
+2,white matter of left cerebral hemisphere,"[225, 225, 225]",1845807,176248.93,12.66
+3,cortex of left cerebral hemisphere,"[205, 62, 78]",3900879,372479.77,26.76
+4,left lateral ventricle,"[120, 18, 134]",70811,6761.47,0.49
+5,temporal horn of left lateral ventricle,"[196, 58, 250]",66,6.3,0.0
+7,white matter of left hemisphere of cerebellum,"[220, 248, 164]",111499,10646.61,0.76
+8,left cerebellar cortex,"[230, 148, 34]",665872,63581.53,4.57
+10,left thalamus,"[0, 118, 14]",78371,7483.34,0.54
+11,left caudate nucleus,"[122, 186, 220]",33398,3189.05,0.23
+12,left putamen,"[236, 13, 176]",49235,4701.26,0.34
+13,left globus pallidus,"[12, 48, 255]",16058,1533.32,0.11
+14,third ventricle,"[204, 182, 142]",9518,908.84,0.07
+15,fourth ventricle,"[42, 204, 164]",15319,1462.75,0.11
+16,brainstem,"[119, 159, 176]",224140,21402.26,1.54
+17,left hippocampus,"[220, 216, 20]",35590,3398.35,0.24
+18,left amygdala,"[103, 255, 255]",14409,1375.86,0.1
+24,cerebrospinal fluid,"[60, 60, 60]",8557,817.07,0.06
+26,left nucleus accumbens,"[255, 165, 0]",3697,353.01,0.03
+28,left ventral diencephalon,"[165, 42, 42]",48111,4593.93,0.33
+41,white matter of right cerebral hemisphere,"[0, 225, 0]",1861446,177742.24,12.77
+42,cortex of right cerebral hemisphere,"[205, 62, 78]",3845361,367178.57,26.38
+43,right lateral ventricle,"[120, 18, 134]",59786,5708.73,0.41
+44,temporal horn of right lateral ventricle,"[196, 58, 250]",132,12.6,0.0
+46,white matter of right hemisphere of cerebellum,"[220, 248, 164]",112336,10726.53,0.77
+47,right cerebellar cortex,"[230, 148, 34]",659405,62964.02,4.52
+49,right thalamus proper,"[0, 118, 14]",79914,7630.68,0.55
+50,right caudate nucleus,"[122, 186, 220]",34067,3252.93,0.23
+51,right putamen,"[236, 13, 176]",48700,4650.17,0.33
+52,right globus pallidus,"[255, 48, 255]",15336,1464.38,0.11
+53,right hippocampus,"[220, 216, 20]",35077,3349.37,0.24
+54,right amygdala,"[103, 255, 255]",15910,1519.18,0.11
+58,right nucleus accumbens,"[255, 165, 0]",3599,343.65,0.02
+60,right ventral diencephalon,"[165, 42, 42]",46949,4482.98,0.32
+73,right thin cerebral white matter,"[240, 240, 240]",628547,60017.51,4.31
