@@ -16,8 +16,8 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 │   │   │   ├── captions_3d  
 │   │   │   ├── analyse_statistics 
 │   │   │   └── analyse_statistics_simplified  
-
-
+│   │   │
+│   │   │
 
 - `descriptions` : contient les descriptions des images avec **ANATOMIE_IBSR.info.csv**  
 - `descriptions_simple` : contient les descriptions des images avec **simplified_IBSR.info.csv**  
