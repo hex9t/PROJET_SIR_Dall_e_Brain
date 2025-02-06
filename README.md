@@ -120,7 +120,7 @@ Une fois que les nouveaux fichiers CSV sont générés, vous pouvez ensuite exé
 python simple_captions.py D:\SIR\T2\IXI\seg D:\SIR\T2\IXI\descriptions_simple .\metafolder\ D:\SIR\T2\IXI\captions_3d_simple\captions_exhaustive
 ```
 
-**Important** : N’oubliez pas de **changer manuellement** la modalité des légendes à la sortie, car nous n’avons pas eu le temps de l’adapter pour chaque base de données. Cette modification se fait dans la variable `a` de la fonction `process_folder()`.
+
 
 ### 3. Dossier des Métadonnées
 
