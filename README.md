@@ -5,26 +5,32 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 ![Image comparant les deux Atlas](images/code.png)
 ## Structure de la base de données (sur disque dure)
 ### Nouvelle Arborescence utilisée
-├── SIR  
-│   ├── FL  
-│   │   ├── Kirby  
-│   │   │   ├── brain  
-│   │   │   ├── NG  
-│   │   │   ├── descriptions  
-│   │   │   ├── descriptions_simple  
-│   │   │   ├── captions_3d_simple  
-│   │   │   ├── captions_3d  
-│   │   │   ├── analyse_statistics 
-│   │   │   └── analyse_statistics_simplified  
-│   │   │
-│   │   │
+SIR/
+├── FL/
+│   ├── Kirby/
+│   │   ├── brain/
+│   │   ├── NG/
+│   │   ├── descriptions/
+│   │   ├── descriptions_simple/
+│   │   ├── captions_3d_simple/
+│   │   ├── captions_3d/
+│   │   ├── analyse_statistics/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
+│   │   ├── analyse_statistics_simplified/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
 
 - `descriptions` : contient les descriptions des images avec **ANATOMIE_IBSR.info.csv**  
 - `descriptions_simple` : contient les descriptions des images avec **simplified_IBSR.info.csv**  
 - `captions_3d` : contient les captions générés avec **captions_generator_advanced.py**  
 - `captions_3d_simple` : contient les captions générés avec **simple_captions.py**  
-- `analyse_statistics` : contient 6 fichiers JSON analytiques avec **ANATOMIE_IBSR.info.csv**
-- `analyse_statistics_simplified` : contient 6 fichiers JSON analytiques avec **simplified_IBSR.info.csv**  
+- `analyse_statistics/` : Statistical analysis outputs.  
+    - `csv/` : Contains statistical result files in CSV format.  
+    - `boxplots/` : Box plot visualizations of the statistical data.  
+  - `analyse_statistics_simplified/` : Simplified version of the statistical analysis.  
+    - `csv/` : Contains simplified statistical result files in CSV format.  
+    - `boxplots/` : Box plot visualizations of the simplified statistical data.  
 
 ### Tâches principales :
 
