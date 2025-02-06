@@ -5,21 +5,22 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 ![Image comparant les deux Atlas](images/code.png)
 ## Structure de la base de données (sur disque dure)
 ### Nouvelle Arborescence utilisée
-├── SIR  
-│   ├── FL  
-│   │   ├── Kirby  
-│   │   │   ├── brain  
-│   │   │   ├── NG  
-│   │   │   ├── descriptions  
-│   │   │   ├── descriptions_simple  
-│   │   │   ├── captions_3d_simple  
-│   │   │   ├── captions_3d  
-│   │   │   ├── analyse_statistics/
-│   │   │   │   │── csv/
-│   │   │   │   ├── boxplots/
-│   │   │   ├── analyse_statistics_simplified/
-│   │   │   │   ├── csv/
-│   │   │   │   ├── boxplots/
+SIR/
+├── FL/
+│   ├── Kirby/
+│   │   ├── brain/
+│   │   ├── NG/
+│   │   ├── descriptions/
+│   │   ├── descriptions_simple/
+│   │   ├── captions_3d_simple/
+│   │   ├── captions_3d/
+│   │   ├── analyse_statistics/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
+│   │   ├── analyse_statistics_simplified/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
+
 
 - `descriptions` : contient les descriptions des images avec **ANATOMIE_IBSR.info.csv**  
 - `descriptions_simple` : contient les descriptions des images avec **simplified_IBSR.info.csv**  
