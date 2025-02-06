@@ -125,6 +125,12 @@ python simple_captions.py D:\SIR\T2\IXI\seg D:\SIR\T2\IXI\descriptions_simple .\
 ### 3. Dossier des Métadonnées
 
 Enfin, veillez à ne pas oublier d’inclure le dossier des métadonnées dans vos répertoires de travail.
+### 4. supprimer les liens logiques à la fin
+
+si les liens logiques ne sont pas souhaitable dans les captions, utiliser le code `"delete_connectors.py"` Sur les captions générés. il faut seulemnt ajouter le lien de dossier captions dans `le chemin`:
+```python
+dossier_json = r"D:\SIR\T1\IBSR_OASIS\captions_3d_simple\captions_var_10"
+```
 
   
 
