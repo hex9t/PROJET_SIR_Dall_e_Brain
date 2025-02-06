@@ -13,18 +13,18 @@ Dans ce projet, nous continuons le travail déjà effectué par [GLucas01/projet
 │   │   │   ├── descriptions  
 │   │   │   ├── descriptions_simple  
 │   │   │   ├── captions_3d_simple  
-│   │   │   └── captions_3d  
-│   ├── statistiques     
-│   │   ├── IBSR  
-│   │   ├── OASIS  
-│   │   ├── Kirby  
-│   │   └── IXI  
+│   │   │   ├── captions_3d  
+│   │   │   ├── analyse_statistics 
+│   │   │   └── analyse_statistics_simplified  
+
+
 
 - `descriptions` : contient les descriptions des images avec **ANATOMIE_IBSR.info.csv**  
 - `descriptions_simple` : contient les descriptions des images avec **simplified_IBSR.info.csv**  
 - `captions_3d` : contient les captions générés avec **captions_generator_advanced.py**  
 - `captions_3d_simple` : contient les captions générés avec **simple_captions.py**  
-- `statistiques` : contient des statistiques sur la base de données  
+- 'analyse_statistics' : contient 6 fichiers JSON analytiques avec **ANATOMIE_IBSR.info.csv**
+- 'analyse_statistics_simplified' : contient 6 fichiers JSON analytiques avec **simplified_IBSR.info.csv**  
 
 ### Tâches principales :
 
