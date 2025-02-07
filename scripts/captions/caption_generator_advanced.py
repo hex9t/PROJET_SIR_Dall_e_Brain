@@ -41,6 +41,7 @@ def calculate_top_variance_structures(csv_folder, n):
 
     # Retourner les ID des structures correspondantes
     top_ids = [label_to_id[label] for label, _ in top_structures]
+    print(top_ids)
     return top_ids
 
 
