@@ -173,8 +173,8 @@ Ce script a été adapté de la version précédente. Grâce à l’utilisation 
 
 ## Description
 Cette partie consiste à analyser statistiquement les structures cérébrales pour chaque atlas à partir des fichiers CSV associés aux images au format nii.gz, qui contiennent des informations telles que l’ID du sujet, le label anatomique, le volume et le ratio volumique, en regroupant les données en six catégories (Male, Female, Minor, Senior, Adult, Overall) pour chaque atlas.
-Sur la base de ces statistiques, des boîtes à moustaches ont été générées pour visualiser les distributions des volumes, fournissant ainsi des informations clés pour la création de captions 3D, notamment en identifiant les structures qui présentent les variations les plus importantes.
 
+Sur la base de ces statistiques, des boîtes à moustaches ont été générées pour visualiser les distributions des volumes, fournissant ainsi des informations clés pour la création de captions 3D, notamment en identifiant les structures qui présentent les variations les plus importantes. Nous détaillerons ce point plus tard. 
 ## Génération des Statistiques en Fichiers JSON
 
 ### 1. Générer les statistiques d'information en fichiers JSON
@@ -249,3 +249,30 @@ python .\convertisseur.py .\SIR\FL\Kirby\analyse_statistcs
 ```
 
 Les fichiers CSV générés seront placés dans le dossier `csv` qui se trouve dans le dossier d'entrée.
+
+# Boîte à Moustache - Génération de Boxplots
+
+## Description
+
+Ce programme Python génère des boîtes à moustache à partir des données d'analyse statistiques contenues dans des fichiers JSON `analyse_statistcs`. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
+
+## Utilisation
+Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
+
+```bash
+python .\boite_a_moustache.py path_input_folder
+```
+
+**Exemple d'exécution :**
+
+```bash
+python .\boite_a_moustache.py .\SIR\FL\Kirby\analyse_statistcs
+```
+
+Les images générées représentent chaque structure présente dans chaque fichier JSON et sont enregistrées dans un nouveau dossier `boxplots` situé soit dans le dossier d'entrée 
+
+
+
+
+
+
