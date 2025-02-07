@@ -30,10 +30,10 @@ Avant d'exécuter ce programme, vous devez avoir Python installé sur votre mach
 ## Utilisation
 
 ### Exemple d'exécution
-Sur un système Linux, vous pouvez exécuter le programme avec la commande suivante :
+Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
 
 ```bash
-python3 statistiques_cerveux.py input_folder
+python .\statistiques_cerveux.py <input_folder>
 ```
 # Analyse Statistique du Cerveau - Volume et Ratio par Groupe
 
