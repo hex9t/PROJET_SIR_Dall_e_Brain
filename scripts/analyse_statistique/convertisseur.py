@@ -4,7 +4,7 @@ import csv
 import sys
 
 ##### Usage: python .\statistiques_cerveux.py <input_folder>
-##### This program is only suitable for converting statistical analysis data json file in analyse_statistics into csv file
+##### This program is only suitable for converting statistical analysis data json file in analyse_statistics(and also simplified) into csv file
 
 def json_to_csv(json_file, output_folder):
     """
