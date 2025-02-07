@@ -14,6 +14,13 @@ Vous pouvez installer `matplotlib` via pip :
 ```bash
 pip install matplotlib
 ```
+### Exemple d'exécution
+Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
+
+```bash
+python .\boite_a_moustache.py <input_folder>
+```
+
 # Convertisseur JSON en CSV - Analyse Statistique du Cerveau
 
 ## Description
@@ -33,7 +40,7 @@ Avant d'exécuter ce programme, vous devez avoir Python installé sur votre mach
 Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
 
 ```bash
-python .\statistiques_cerveux.py <input_folder>
+python .\convertisseur.py <input_folder>
 ```
 # Analyse Statistique du Cerveau - Volume et Ratio par Groupe
 
@@ -56,3 +63,14 @@ Si vous ne disposez pas de la bibliothèque `numpy`, installez-la avec la comman
 
 ```bash
 pip install numpy
+```
+
+### Exemple d'exécution
+Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
+
+```bash
+python .\statistiques_cerveux.py <input_folder> (pour générer des informations structurelles complètes)
+```
+```bash
+python .\statistiques_cerveux_simplified.py <input_folder> (pour générer des informations structurelles simplifiées)
+```
