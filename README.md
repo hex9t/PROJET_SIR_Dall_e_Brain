@@ -273,6 +273,11 @@ python .\boite_a_moustache.py .\SIR\FL\Kirby\analyse_statistcs
 Les images générées représentent chaque structure présente dans chaque fichier JSON et sont enregistrées dans un nouveau dossier `boxplots` situé soit dans le dossier d'entrée 
 
 
+## Bilan et Perspectives
+
+Cette table montre l'état d'avancement actuel du projet. Plus de la moitié des bases de données ont été traitées. Pour l'avenir, dès que les informations `desccriptions` et `descriptions_simple` seront générées, nous pourrons rapidement compléter l'analyse des bases de données.
+
+![Bilan d'avancement](images/degré_de_réussite.PNG)
 
 
 
