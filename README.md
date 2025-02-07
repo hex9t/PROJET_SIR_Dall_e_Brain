@@ -255,7 +255,7 @@ Les fichiers CSV générés seront placés dans le dossier `csv` qui se trouve d
 
 ## Description
 
-Ce programme Python `boite_a_moustache.py` génère des boîtes à moustache à partir des données d'analyse statistiques contenues dans des fichiers JSON `analyse_statistcs`. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
+Ce programme Python `boite_a_moustache.py` génère des boîtes à moustache à partir des données contenues dans des fichiers JSON du dossier concernant les analyses statistiques. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
 
 ## Utilisation
 Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
