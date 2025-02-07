@@ -132,6 +132,40 @@ si les liens logiques ne sont pas souhaitable dans les captions, utiliser le cod
 dossier_json = r"D:\SIR\T1\IBSR_OASIS\captions_3d_simple\captions_var_10"
 ```
 
-  
 
+
+---
+
+### modalite_speed.py
+
+Ce script a pour objectif de corriger rapidement certaines informations dans des fichiers JSON générés précédemment. Plus précisément, il parcourt un répertoire contenant plusieurs sous-dossiers (par exemple, *captions_exhaustive*, *captions_selection*, *captions_size_10* et *captions_var_10*) et remplace dans le champ « captions » une modalité erronée par la modalité correcte. Pour optimiser la vitesse d’exécution, le script n’utilise pas d’arguments en ligne de commande ; tous les chemins sont définis directement dans le code. De plus, il exploite le **multithreading** pour traiter simultanément les différents sous-dossiers. Voici les points clés :
+
+- **Variables globales** : Deux variables, `wrong_info` et `right_info`, sont définies pour représenter respectivement la modalité incorrecte ("T1") et la modalité correcte ("FLAIR").
+- **Fonction `replace_none_in_json`** : Elle parcourt chaque fichier JSON d’un dossier, remplace dans le tableau « captions » toutes les occurrences de la modalité erronée par la bonne modalité, puis sauvegarde le fichier modifié.
+- **Fonction `process_directory`** : Elle traite chacun des sous-dossiers spécifiés en appelant la fonction de remplacement.
+- **Utilisation de threads** : Le script crée 4 threads, chacun chargé de traiter l’un des sous-dossiers, ce qui permet de paralléliser le travail et d’accélérer le traitement global.
+
+Ce script permet ainsi de remplir efficacement plusieurs bibliothèques en peu de temps, en garantissant que tous les fichiers soient modifiés rapidement.
+
+---
+
+### caption_generator_speed.py
+
+Ce script est un générateur de légendes pour des images médicales, conçu en priorité pour la performance. Afin de maximiser l’efficacité, les chemins d’accès aux dossiers (images, descriptions CSV, métadonnées et dossier de sortie) sont directement codés, et le script produit simultanément quatre fichiers de sortie pour chaque image. Les quatre sorties correspondent aux approches suivantes :
+
+1. **captions_exhaustive** : Génération de légendes pour toutes les structures détectées, sans filtrage.
+2. **captions_selection** : Application d’un filtre fixe basé sur une liste d’ID de structures prédéfinie.
+3. **captions_size_10** : Conservation uniquement des 10 structures les plus volumineuses.
+4. **captions_var_10** : Filtrage des structures en fonction de la variance de leur volume, à partir d’une liste pré-calculée pour éviter des recalculs coûteux.
+
+Pour augmenter encore la vitesse de traitement, le script utilise le **multiprocessing** avec 8 processus, ce qui permet de traiter plusieurs images en parallèle. Voici les points essentiels du code :
+
+- **Pré-calcul de la variance** : La fonction `calculate_top_variance_structures` parcourt tous les fichiers CSV pour calculer la variance des volumes de chaque structure et retourne une liste d’IDs correspondant aux structures avec la plus grande variance. Ce calcul est effectué une seule fois dans le processus principal, et le résultat est ensuite transmis à tous les processus de traitement.
+- **Fonction `generate_human_like_caption`** : Elle génère les légendes pour une image en combinant les données des fichiers CSV de description et des métadonnées. Selon les paramètres fournis (sélection, taille, variance), elle applique différents filtres pour constituer la légende finale.
+- **Traitement en parallèle** : La fonction `process_folder` parcourt le dossier d’images et utilise le module `multiprocessing.Pool` (avec 8 processus) pour lancer simultanément le traitement de plusieurs fichiers via la fonction `process_single_file`.
+- **Production de 4 fichiers par image** : Pour chaque image, quatre versions de légendes sont générées et enregistrées dans des sous-dossiers dédiés.
+
+Ce script a été adapté d’Abdérrahman Lichir, dont le travail minutieux – réalisé jusqu’à 3 heures du matin malgré quelques périodes d’instabilité – mérite d’être salué. Grâce à l’utilisation conjointe du multithreading et du multiprocessing, l’ensemble du traitement (couvrant neuf bibliothèques différentes telles que IBSR, IBSR_IXI, IBSR_Kirby, IBSR_OASIS, OASIS, IXI, Kirby, Kirby_IXI, Kirby_OASIS) a pu être achevé avant 17 heures. Les résultats seront ensuite remis à des camarades pour vérification et, si possible, un rendez-vous est envisagé demain pour finaliser la présentation.
+
+--- 
 
