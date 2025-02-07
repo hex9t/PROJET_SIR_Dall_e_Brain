@@ -6,12 +6,12 @@ from collections import defaultdict
 import statistics
 import numpy as np
 
-##### example of excution the programme:  python3 statistiques_cerveux.py ./Data_analyse/Kirby_seg/csv_files/ (on Linux)
-##### need to change line 166,167,175 to modify to the correct path.
+##### Example of excution the programme:  python .\statistiques_cerveux.py <input_folder>
+##### Need to change line 163,164,172 to modify to the correct path.
 
 def process_age(age):
     """
-    Processes the age value and categorizes it into 'Minor', 'Adult', or 'Senior'.
+    Create the groupe 'Minor', 'Adult', or 'Senior'.
     If the input does not contain a digit, it is categorized as 'Unknown'.
     """
     if not any(char.isdigit() for char in age):
@@ -37,7 +37,7 @@ def collect_ids_by_category(file_path):
         "Senior": []
     }
     
-    with open(file_path, mode="r", encoding="utf-8") as file:
+    with open(file_path, mode="r", encoding="ISO-8859-1") as file:
         reader = csv.DictReader(file)
         
         for row in reader:
@@ -59,10 +59,9 @@ def collect_ids_by_category(file_path):
 def load_anatomie(input_anatomie_csv):
     """
     Loads anatomical label information from a CSV file.
-    Returns a dictionary mapping label IDs to label names and RGB values.
     """
     anatomie_template = {}
-    with open(input_anatomie_csv, mode="r", encoding="utf-8") as file:
+    with open(input_anatomie_csv, mode="r", encoding="ISO-8859-1") as file:
         reader = csv.DictReader(file)
         for row in reader:
             label_id = int(row["ID"])
@@ -73,8 +72,7 @@ def load_anatomie(input_anatomie_csv):
 
 def calculate_statistics(data, anatomie_template):
     """
-    Calculates statistical measures for brain structure volumes and ratios.
-    Computes mean, standard deviation, quartiles, IQR, and identifies outliers.
+    Calculates statistical measures for brain structure.
     """
     label_data = defaultdict(list)
     for label_id, volume_mm3, volume_ratio in data:
@@ -101,8 +99,8 @@ def calculate_statistics(data, anatomie_template):
 
         results[label_id] = {
             "label_name": label_name,
-            "avg_volume (mm³)": avg_volume,
-            "std_volume (mm³)": std_volume,
+            "avg_volume (mm3)": avg_volume,
+            "std_volume (mm3)": std_volume,
             "avg_ratio_vol_totvol (%)": avg_ratio,
             "ratio_std_avg (%)": ratio_std_avg,
             "min": min_val,
@@ -121,7 +119,7 @@ def calculate_statistics(data, anatomie_template):
 
 def calculate_total_statistics(total_volumes):
     """
-    Calculates statistical measures for the total of brain structure volumes and ratios. 
+    Calculates statistical measures for the total of brain structure. 
     """
     if not total_volumes:
         return {}
@@ -139,8 +137,8 @@ def calculate_total_statistics(total_volumes):
 
     return {
         "label_name": "Total brain",
-        "avg_volume (mm³)": avg_volume,
-        "std_volume (mm³)": std_volume,
+        "avg_volume (mm3)": avg_volume,
+        "std_volume (mm3)": std_volume,
         "avg_ratio_vol_totvol (%)": avg_ratio,
         "ratio_std_avg (%)": ratio_std_avg,
         "min": min_val,
@@ -155,25 +153,24 @@ def calculate_total_statistics(total_volumes):
 def save_to_json(filename, data, base_name):
     """
     Saves the computed statistics into a JSON file.
-    The group name is dynamically created using base_name.
     """
     group_name = f"{base_name}_{filename.split('.')[0]}"
     file_path = os.path.join(output_folder, filename)
-    with open(file_path, 'w', encoding='utf-8') as file:
+    with open(file_path, 'w', encoding='ISO-8859-1') as file:
         json.dump({"Group": group_name, **data}, file, indent=4, ensure_ascii=False)
 
 # Define input file paths
-input_info_path = "./data/Keywords/IXI_info.csv"   # Path to subject info CSV
-input_anatomie_csv = "./data/Keywords/Simplified_anatomie_IBSR.csv"  # Path to anatomical labels CSV
+input_info_path = os.path.join("Keywords", "OASIS_info.csv")   # Path to subject info CSV
+input_anatomie_csv = os.path.join("Keywords", "Anatomie_IBSR.csv") # Path to anatomical labels CSV
 
 if len(sys.argv) < 2:
-    print("Usage: python3 statistiques_cerveux.py <input_folder>")
+    print("Usage: python statistiques_cerveux.py <input_folder>")
     sys.exit(1)
 
-input_folder = sys.argv[1]
+input_folder = os.path.normpath(sys.argv[1]) 
 anatomie_template = load_anatomie(input_anatomie_csv)
-output_folder = './data/IXI/seg_statistiques/'  # Output folder path
-os.makedirs(output_folder, exist_ok=True)
+output_folder = os.path.join("FL", "Kirby_OASIS", "analyse_statistics") # Output folder path
+os.makedirs(os.path.normpath(output_folder), exist_ok=True)
 
 base_name = os.path.normpath(output_folder).split(os.sep)[1]
 
@@ -186,25 +183,58 @@ grouped_volumes["Overall"] = []
 group_total_volumes = {group: [] for group in categories}
 group_total_volumes["Overall"] = []
 
+# Distinguish between single-name databases and multi-name
+database_name = os.path.basename(os.path.dirname(input_folder)) 
+if "_" in database_name:  
+    primary_db, secondary_db = database_name.split("_")  
+    is_composite_db = True
+else:
+    primary_db = database_name
+    secondary_db = None
+    is_composite_db = False
+
 # Process each CSV file in the input folder
 for csv_file in os.listdir(input_folder):
     if csv_file.endswith(".csv"):
         file_path = os.path.join(input_folder, csv_file)
-        file_id = int(csv_file.split("_")[1].lstrip('0')) if csv_file.startswith(("OAS", "IBSR")) else \
-                  int(csv_file.split("-")[1].lstrip('0')) if csv_file.startswith("KKI") else \
-                  int(csv_file.split("-")[0].lstrip("IXI"))
+
+        if not is_composite_db:
+            file_id = int(csv_file.split("_")[1].lstrip('0')) if csv_file.startswith(("OAS", "IBSR")) else \
+                        int(csv_file.split("-")[1].lstrip('0')) if csv_file.startswith("KKI") else \
+                        int(csv_file.split("-")[0].lstrip("IXI"))
+        else: # Need to change to a smarter way to get the ID of the file. A vous de jouer ==-== .
+            if primary_db == "IBSR" and secondary_db == "Kirby":
+                file_id = int(csv_file.split("-")[1].lstrip('0'))  
+            elif primary_db == "IBSR" and secondary_db == "IXI":
+                first_part = csv_file.split("-")[0]
+                file_id = int(first_part.split("_")[-1].lstrip("IXI"))
+            elif primary_db == "IBSR" and secondary_db == "OASIS":
+                file_id = int(csv_file.split("_")[5].lstrip('0'))  
+            elif primary_db == "OASIS" and secondary_db == "IBSR":
+                first_part = csv_file.split("_")[9]
+                file_id = int(first_part.split(".")[0].lstrip('0')) 
+            elif primary_db == "OASIS" and secondary_db == "Kirby":
+                file_id = int(csv_file.split("-")[2].lstrip('0'))
+            elif primary_db == "Kirby" and secondary_db == "IXI":
+                first_part = csv_file.split("_")[3]
+                file_id = int(first_part.split("-")[0].lstrip("IXI"))
+            elif primary_db == "Kirby" and secondary_db == "OASIS":
+                file_id = int(csv_file.split("_")[4].lstrip('0'))
+            else:
+                raise ValueError(f"Unknown: {secondary_db}")
         
         file_data = {}
-        with open(file_path, mode="r", encoding="utf-8") as file:
+        with open(file_path, mode="r", encoding="ISO-8859-1") as file:
             reader = csv.DictReader(file)
             for row in reader:
                 label_id = int(row["ID"])
                 file_data[label_id] = {
                     "voxel_count": int(row["Voxel Count"]),
-                    "volume_mm3": float(row["Volume (mm³)"]),
+                    "volume_mm3": float(row.get("Voxel Volume (mm³)", row.get("Voxel Volume (mm�)", "0"))),
                     "volume_ratio": float(row["Volume Ratio (%)"]),
                 }
 
+        
         subject_total = sum(d["volume_mm3"] for lid, d in file_data.items() if lid != 0)
 
         for group, ids in categories.items():
@@ -221,3 +251,4 @@ for group, volumes in grouped_volumes.items():
     total_stats = calculate_total_statistics(group_total_volumes[group])
     stats["Total"] = total_stats
     save_to_json(f'{group}_statistics.json', stats, base_name)
+
