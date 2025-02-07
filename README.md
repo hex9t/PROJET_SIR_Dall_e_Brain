@@ -149,7 +149,7 @@ Ce script permet ainsi de remplir efficacement plusieurs bibliothèques en peu d
 
 ---
 
-### caption_generator_speed.py
+### 6. caption_generator_speed.py
 
 Ce script est un générateur de légendes pour des images médicales, conçu en priorité pour la performance. Afin de maximiser l’efficacité, les chemins d’accès aux dossiers (images, descriptions CSV, métadonnées et dossier de sortie) sont directement codés, et le script produit simultanément quatre fichiers de sortie pour chaque image. Les quatre sorties correspondent aux approches suivantes :
 
@@ -225,8 +225,7 @@ Pour la sortie, les 6 fichiers JSON sont enregistrés dans le nouveau répertoir
 - `Senior_statistics.json`
 - `All_statistics.json`
 
-# Convertisseur JSON en CSV - Analyse Statistique du Cerveau
-
+# Convertisseur JSON en CSV 
 ## Description
 
 Ce programme Python convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
