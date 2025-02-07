@@ -229,7 +229,7 @@ Pour la sortie, les 6 fichiers JSON sont enregistrés dans le nouveau répertoir
 # Convertisseur JSON en CSV 
 ## Description
 
-Ce programme Python convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
+Ce programme Python `convertisseur.py` convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
 
 ## Prérequis
 
@@ -255,7 +255,7 @@ Les fichiers CSV générés seront placés dans le dossier `csv` qui se trouve d
 
 ## Description
 
-Ce programme Python génère des boîtes à moustache à partir des données d'analyse statistiques contenues dans des fichiers JSON `analyse_statistcs`. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
+Ce programme Python `boite_a_moustache.py` génère des boîtes à moustache à partir des données d'analyse statistiques contenues dans des fichiers JSON `analyse_statistcs`. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
 
 ## Utilisation
 Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
