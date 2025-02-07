@@ -3,8 +3,8 @@ import json
 import csv
 import sys
 
-##### Usage: python3 statistiques_cerveux.py input_folder (on linux)
-##### This program is only suitable for converting statistical analysis data json file into csv file
+##### Usage: python .\statistiques_cerveux.py <input_folder>
+##### This program is only suitable for converting statistical analysis data json file in analyse_statistics into csv file
 
 def json_to_csv(json_file, output_folder):
     """
@@ -17,7 +17,6 @@ def json_to_csv(json_file, output_folder):
         # Define output CSV file path
         csv_file = os.path.join(output_folder, os.path.basename(json_file).replace('.json', '.csv'))
 
-        # Open and load the JSON file
         with open(json_file, 'r', encoding='utf-8') as file:
             data = json.load(file)
 
@@ -25,7 +24,7 @@ def json_to_csv(json_file, output_folder):
         if not isinstance(data, dict):
             raise ValueError(f"Skipping {json_file}: JSON data must be a dictionary.")
 
-        # Extract metadata (Group name)
+        # Extract Group name
         group_name = data.get("Group", "Unknown_Group")
 
         # Extract the data entries (excluding the "Group" key)
@@ -34,13 +33,13 @@ def json_to_csv(json_file, output_folder):
             if key == "Group":
                 continue  # Skip the Group metadata
 
-            if isinstance(values, dict):  # Ensure it's a dictionary
+            if isinstance(values, dict): 
                 entry = {
-                    "Group": group_name,  # Add metadata
-                    "Region_ID": key,  # Use region ID as a field
-                    "label_name": values.get("label_name", ""),  # Structure name
-                    "avg_volume (mm³)": values.get("avg_volume (mm³)", ""),
-                    "std_volume (mm³)": values.get("std_volume (mm³)", ""),
+                    "Group": group_name, 
+                    "Region_ID": key,
+                    "label_name": values.get("label_name", ""),  
+                    "avg_volume (mm³)": values.get("avg_volume (mm3)", ""),
+                    "std_volume (mm³)": values.get("std_volume (mm3)", ""),
                     "avg_ratio_vol_totvol (%)": values.get("avg_ratio_vol_totvol (%)", ""),
                     "ratio_std_avg (%)": values.get("ratio_std_avg (%)", ""),
                     "min": values.get("min", ""),
@@ -49,11 +48,11 @@ def json_to_csv(json_file, output_folder):
                     "Q2": values.get("Q2", ""),
                     "Q3": values.get("Q3", ""),
                     "IQR": values.get("IQR", ""),
-                    "outliers": ", ".join(map(str, values.get("outliers", [])))  # Convert list to string
+                    "outliers": ", ".join(map(str, values.get("outliers", []))) if values.get("outliers") else "None"
                 }
                 records.append(entry)
 
-        # Define a fixed logical column order
+        # Predefine a column order
         headers = [
             "Group", "Region_ID", "label_name",
             "avg_volume (mm³)", "std_volume (mm³)", "avg_ratio_vol_totvol (%)", "ratio_std_avg (%)",
@@ -95,6 +94,8 @@ def process_folder(folder_path):
         json_to_csv(os.path.join(folder_path, json_file), output_folder)
 
 if __name__ == "__main__":
+    """
+    """
     if len(sys.argv) != 2:
         print("Usage: python3 convertisseur.py folder_name")
     else:
