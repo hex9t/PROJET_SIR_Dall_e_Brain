@@ -32,9 +32,10 @@ SIR/
     - `boxplots/` : Box plot visualizations of the statistical data.  
 - `analyse_statistics_simplified/` : Simplified version of the statistical analysis.  
     - `csv/` : Contains simplified statistical result files in CSV format.  
-    - `boxplots/` : Box plot visualizations of the simplified statistical data.  
-
-### Tâches principales :
+    - `boxplots/` : Box plot visualizations of the simplified statistical data.
+ 
+# Complétion du disque dur
+## Tâches réalisées :
 
    1. **Complétion des bases de données** :  
 
