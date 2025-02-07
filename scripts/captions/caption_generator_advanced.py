@@ -4,14 +4,19 @@ import json
 import nibabel as nib  # To read NIfTI files
 import os
 import argparse
+import random
 #exemple : python caption_generator_advanced.py data_kirby descriptions_3D .\metafolder\ captions_test 
 #python caption_generator_advanced.py data_kirby descriptions_3D ./metafolder/ captions_test --var 5 : variance
 
 ###############################################
 def calculate_top_variance_structures(csv_folder, n):
-    """Calculate the top n structures with the highest variance across all CSV files in the folder."""
+    """Calculate the top n structures with the highest variance across all CSV files in the folder, and return their IDs."""
     structure_variances = {}
 
+    # Dictionnaire pour associer chaque label à un ID
+    label_to_id = {}
+
+    # Récupération des volumes pour chaque structure et de l'ID
     for csv_file in os.listdir(csv_folder):
         if csv_file.endswith(".csv"):
             file_path = os.path.join(csv_folder, csv_file)
@@ -22,19 +27,24 @@ def calculate_top_variance_structures(csv_folder, n):
                 if label == "Unknown":
                     continue
                 volume = row['Voxel Volume (mm³)']
+                structure_id = row['ID']  # Assumons qu'il y a une colonne 'ID' pour l'ID de la structure
                 if label not in structure_variances:
                     structure_variances[label] = []
+                    label_to_id[label] = structure_id  # Associe l'ID au label
                 structure_variances[label].append(volume)
 
-    # Calculate variance for each structure
+    # Calcul de la variance pour chaque structure
     variance_results = {label: pd.Series(volumes).var() for label, volumes in structure_variances.items()}
-    
-    # Sort by variance in descending order and take the top n
+
+    # Tri par variance décroissante et sélection des n premiers
     top_structures = sorted(variance_results.items(), key=lambda x: x[1], reverse=True)[:n]
-    return [label for label, _ in top_structures]
+
+    # Retourner les ID des structures correspondantes
+    top_ids = [label_to_id[label] for label, _ in top_structures]
+    return top_ids
 
 
-def generate_human_like_caption(image_filename, structures_file, metadata_file, output_file, image_type, selection=None, size=None):
+def generate_human_like_caption(image_filename, csv_folder,structures_file, metadata_file, output_file, a, image_type, selection=None, size=None, var=None):
     # Extract ID and type from image filename using regex
     match = None
     if image_type == "Kirby":
@@ -49,6 +59,7 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
     elif image_type == "IXI":
         match = re.search(r'IXI(\d+)-IOP-\d+-([A-Z]+)', image_filename)
         scan_type = "T2"
+    scan_type = a    
 
     if not match:
         raise ValueError(f"Invalid image filename format for file: {image_filename}")
@@ -62,12 +73,23 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
 
     # Find metadata based on image ID
     metadata = metadata_df[metadata_df['ID'] == image_id]
-    if metadata.empty:
-        raise ValueError(f"No metadata found for ID {image_id} in file: {image_filename}")
 
-    # Extract metadata details
-    age = metadata.iloc[0]['AGE']
-    gender = metadata.iloc[0]['GENDER']
+# Si aucune métadonnée n'est trouvée, utiliser les valeurs par défaut
+    if metadata.empty:
+        age = "unknown"
+        gender = "human"
+    else:
+        # Extraire l'âge et gérer les valeurs manquantes
+        if image_type == "IXI":
+            age = metadata.iloc[0]['AGE']
+            age = int(float(age.replace(",", "."))) if pd.notna(age) else "unknown"
+        else:
+            age = metadata.iloc[0]['AGE']
+            age = age if pd.notna(age) else "unknown"
+
+        # Extraire le genre et gérer les valeurs manquantes
+        gender = metadata.iloc[0]['GENDER']
+        gender = gender if pd.notna(gender) else "human"
 
     # Load the 3D image to get dimensions
     img = nib.load(image_filename)  # Load the NIfTI image
@@ -78,14 +100,14 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
     filtered_structures = structures_df[structures_df['Label'] != "Unknown"]
 
     # Calculate brain volume
-    brain_volume = filtered_structures['Voxel Volume (mm³)'].sum() / 1000  # Convert to cm³
+    brain_volume = round(filtered_structures['Voxel Volume (mm³)'].sum() / 1000)
 
     # Generate list of structures with volumes and percentages
     structures_with_volumes = []
     for _, row in filtered_structures.iterrows():
         structure_id = row['ID']
         label = row['Label']
-        structure_volume = row['Voxel Volume (mm³)']
+        structure_volume = row['Voxel Volume (mm³)']/ 1000
         percentage = round((row['Voxel Count'] / total_voxels) * 100, 2)
         structures_with_volumes.append({"id": structure_id, "label": label, "volume": structure_volume, "percentage": percentage})
 
@@ -101,22 +123,76 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
         selected_structures = [s for s in sorted_structures if int(s['id']) in selection]  # Utilisation de ID au lieu de label
         print(f"Final selected structures based on ID: {[s['id'] for s in selected_structures]}")
         sorted_structures = selected_structures
+    if var is not None:
+        selected_structures = [s for s in sorted_structures if int(s['id']) in calculate_top_variance_structures(csv_folder, var)]
+        sorted_structures = selected_structures    
     # Define sentence templates
     templates = [
-        "This {scan_type} scan shows a {gender} subject aged {age} with dimensions {dimensions}. Brain volume is {brain_volume:.2f} cm³. The most prominent structures are {structures}.",
-        "A {scan_type} scan of a {gender} subject, {age} years old, with image dimensions {dimensions}. The total brain volume is {brain_volume:.2f} cm³, including major structures like {structures}.",
-        "Here we see a {scan_type} scan of a {gender} subject aged {age}. The image dimensions are {dimensions}, and the brain volume is {brain_volume:.2f} cm³. Visible structures include {structures}.",
-        "In this {scan_type} scan of a {age}-year-old {gender} subject, the image has dimensions {dimensions} and displays structures such as {structures}. The brain volume is {brain_volume:.2f} cm³.",
-        "This {scan_type} scan captures the brain of a {gender} subject aged {age} with image dimensions {dimensions}. The brain volume is {brain_volume:.2f} cm³. Key structures include {structures}.",
-        "This {scan_type} scan shows the brain of a {gender} subject aged {age}, with dimensions {dimensions}. The total brain volume is {brain_volume:.2f} cm³, and visible structures include {structures}.",
-        "A {scan_type} scan of a {gender} subject, aged {age}, with dimensions {dimensions}. The total brain volume is {brain_volume:.2f} cm³, showing structures such as {structures}.",
-        "Here is a {scan_type} scan of a {gender} subject aged {age}, with image dimensions {dimensions}. The brain volume is {brain_volume:.2f} cm³ and the visible structures include {structures}.",
-        "This {scan_type} scan provides a view of the brain of a {gender} subject, aged {age}, with dimensions of {dimensions}. Brain volume is {brain_volume:.2f} cm³, and visible structures include {structures}.",
-        "This is a {scan_type} scan of a {age}-year-old {gender}, with dimensions {dimensions}. The brain volume is {brain_volume:.2f} cm³, displaying structures like {structures}.",
+        "This {scan_type} scan shows a {gender} subject aged {age} with dimensions {dimensions}. Brain volume is {brain_volume} cm3. The most prominent structures are {structures}",
+        "A {scan_type} scan of a {gender} subject, {age} years old, with image dimensions {dimensions}. The total brain volume is {brain_volume} cm3, including major structures like {structures}",
+        "Here we see a {scan_type} scan of a {gender} subject aged {age}. The image dimensions are {dimensions}, and the brain volume is {brain_volume} cm3. Visible structures include {structures}",
+        "In this {scan_type} scan of a {age}-year-old {gender} subject, the image has dimensions {dimensions} and displays structures such as {structures} The brain volume is {brain_volume} cm3.",
+        "This {scan_type} scan captures the brain of a {gender} subject aged {age} with image dimensions {dimensions}. The brain volume is {brain_volume} cm3. Key structures include {structures}",
+        "This {scan_type} scan shows the brain of a {gender} subject aged {age}, with dimensions {dimensions}. The total brain volume is {brain_volume} cm3, and visible structures include {structures}",
+        "Here is a {scan_type} scan of a {gender} subject aged {age}, with image dimensions {dimensions}. The brain volume is {brain_volume} cm3 and the visible structures include {structures}",
+        "This {scan_type} scan provides a view of the brain of a {gender} subject, aged {age}, with dimensions of {dimensions}. Brain volume is {brain_volume} cm3, and visible structures include {structures}",
+        "This is a {scan_type} scan of a {age}-year-old {gender}, with dimensions {dimensions}. The brain volume is {brain_volume} cm3, displaying structures like {structures}",
     ]
     
-    # Prepare structures text based on selected or all structures
-    structures_text = ", ".join([f"{s['label']} ({s['volume']} mm³)" for s in sorted_structures[:-1]]) + f", and {sorted_structures[-1]['label']} ({sorted_structures[-1]['volume']} mm³)" if len(sorted_structures) > 1 else f"{sorted_structures[0]['label']} ({sorted_structures[0]['volume']} mm³)"
+     # Prepare structures text based on selected or all structures
+    unique_structures = {}
+    for struct in sorted_structures:
+        key = struct["label"].lower()  # Convertir en minuscule
+        if key not in unique_structures or struct["volume"] > unique_structures[key]["volume"]:
+            unique_structures[key] = {**struct, "description": key}  # Remplacer par la version minuscule
+
+    # Convert dictionary back to a sorted list
+    sorted_structures = sorted(unique_structures.values(), key=lambda x: x['volume'], reverse=True)
+    sorted_structures = [s for s in sorted_structures if s["volume"] > 1]
+
+    # List of connectors
+    # Connectors
+    connectors = [
+        "and", "additionally", "furthermore", "also", "moreover", "next", 
+        "in addition", "besides", "as well as", "then", "subsequently", "in particular", 
+        "alternatively", "on the other hand"]
+
+    structures_sentences = []
+    
+    # Define a list of different ways to announce the volume
+    volume_phrases = [
+    "has a volume of", "has this volume", "measures", "displays a volume of", 
+    "has a size of", "is of volume", "shows a volume of", "holds a volume of",
+    "is measured at", "has a capacity of", "amounts to", "comprises a volume of", 
+    "spans a volume of", "occupies a volume of", "accounts for a volume of", 
+    "fills a volume of", "is quantified as", "takes up a volume of", 
+    "represents a volume of", "encapsulates a volume of", "is measured to be", 
+    "features a volume of", "includes a volume of"
+]
+
+    # Build the structure sentences with connectors
+    for i, s in enumerate(sorted_structures):
+        volume = round(s["volume"] * 1000) if s["volume"] < 100 else round(s["volume"])
+        unit = "mm3" if s["volume"] < 100 else "cm3"
+        volume_phrase = random.choice(volume_phrases)
+        sentence = f"the {s['description']} {volume_phrase} {volume} {unit}"
+        
+        # add connector if not the first structure
+        if i > 0:
+            sentence = random.choice(connectors) + " " + sentence
+        
+        structures_sentences.append(sentence)
+
+    # Construire le texte des structures
+    if structures_sentences:
+        structures_text = ", ".join(structures_sentences[:-1])  # Joindre toutes sauf la dernière
+        if len(structures_sentences) > 1:
+            structures_text += ", " + structures_sentences[-1] + "."  # Ajouter la dernière avec un point
+        else:
+            structures_text = structures_sentences[-1] + "."  # Si une seule structure, juste un point
+    else:
+        structures_text = ""
+
 
     # Generate captions using all templates
     captions = []
@@ -132,45 +208,59 @@ def generate_human_like_caption(image_filename, structures_file, metadata_file, 
         captions.append(caption)
 
     # Save the captions to a JSON file
-    output_data = {
-        "image_filename": image_filename,
-        "captions": captions
-    }
-
-    with open(output_file, "w", encoding="utf-8") as file:
-        json.dump(output_data, file, indent=4, ensure_ascii=False)
+    with open(output_file, 'w', encoding='utf-8') as json_file:
+        json.dump({"captions": captions}, json_file, ensure_ascii=False, indent=4)
 
     return captions
+    
 
-
-def process_folder(folder_path, csv_folder, metadata_folder, output_folder, selection=None, size=None):
-    # Create the output folder if it doesn't exist
+def process_folder(folder_path, csv_folder, metadata_folder, output_folder, selection=None, size=None, var=None):
+    # Créer le dossier de sortie si nécessaire
     os.makedirs(output_folder, exist_ok=True)
 
-    # Loop through all files in the folder
+    dataset_keywords = {
+        "KKI2009": "Kirby",
+        "OAS1": "Oasis",
+        "IBSR": "IBSR",
+        "IXI": "IXI"
+    }
+
+    dataset_keywords_modalite = {
+        "KKI2009": "FLAIR",
+        "OAS1": "T1",
+        "IBSR": "T1",
+        "IXI": "T2"
+    }
+
+    a = None  # Initialisation de 'a'
+
+    # Boucle à travers tous les fichiers dans le dossier
     for file_name in os.listdir(folder_path):
-        if file_name.endswith(".nii.gz"):  # Check for NIfTI files
+        if file_name.endswith(".nii.gz"):  # Vérifier les fichiers NIfTI
             image_path = os.path.join(folder_path, file_name)
 
-            # Determine the dataset type based on the filename pattern
-            if "KKI2009" in file_name:
-                image_type = "Kirby"
-                metadata_file = os.path.join(metadata_folder, "Kirby_info.csv")
-            elif "OAS1" in file_name:
-                image_type = "Oasis"
-                metadata_file = os.path.join(metadata_folder, "OASIS_info.csv")
-            elif "IBSR" in file_name:
-                image_type = "IBSR"
-                metadata_file = os.path.join(metadata_folder, "IBSR_info.csv")
-            elif "IXI" in file_name:  # Corrigé ici
-                image_type = "IXI"
-                metadata_file = os.path.join(metadata_folder, "IXI_info.csv")
-            else:
+            # Détecter le type de dataset
+            last_dataset = None
+            last_index = -1
+
+            for keyword, dataset in dataset_keywords.items():
+                index = file_name.rfind(keyword)
+                if index != -1 and index > last_index:
+                    last_dataset = dataset
+                    last_index = index
+
+            if not last_dataset:
                 print(f"Unknown dataset type for image: {file_name}")
                 continue
 
-            # Find the corresponding CSV file for this image
-            base_name = os.path.splitext(file_name)[0]  # Remove extension
+            # Set 'a' à la première modalité détectée
+            if a is None and last_dataset in dataset_keywords_modalite:
+                a = dataset_keywords_modalite[last_dataset]
+
+            metadata_file = os.path.join(metadata_folder, f"{last_dataset}_info.csv")
+
+            # Trouver le fichier CSV correspondant
+            base_name = os.path.splitext(file_name)[0]
             corresponding_csv = None
             for csv_file in os.listdir(csv_folder):
                 if csv_file.startswith(base_name):
@@ -182,17 +272,14 @@ def process_folder(folder_path, csv_folder, metadata_folder, output_folder, sele
                 continue
 
             output_file = os.path.join(output_folder, f"{base_name}_captions.json")
-  
-            generate_human_like_caption(image_path, corresponding_csv, metadata_file, output_file, image_type, selection, size)
-            print(f"Processed: {file_name} with {os.path.basename(corresponding_csv)}")
-          
+            generate_human_like_caption(image_path,csv_folder ,corresponding_csv, metadata_file, output_file, a, last_dataset, selection, size, var)
+            print(f"Processed: {file_name} with {os.path.basename(corresponding_csv)} (Dataset: {last_dataset}, Modality: {a})")
 
-
+# Code principal pour les arguments de ligne de commande
 if __name__ == "__main__":
-    # Initialisation de argparse pour prendre les paramètres depuis la ligne de commande
     parser = argparse.ArgumentParser(description="Generate captions for medical scans.")
     
-    # Ajoute des arguments pour chaque dossier
+    # Arguments pour les dossiers
     parser.add_argument("input_folder", type=str, help="Path to the folder containing images")
     parser.add_argument("csv_folder", type=str, help="Path to the folder containing CSV files")
     parser.add_argument("metadata_folder", type=str, help="Path to the metadata folder")
@@ -201,13 +288,8 @@ if __name__ == "__main__":
     parser.add_argument("--size", type=int, help="Number of top structures to display", default=None)
     parser.add_argument("--var", type=int, help="Number of structures with the highest variance to display", default=None)
 
-    
-    # Parse les arguments passés dans la ligne de commande
+    # Parse les arguments
     args = parser.parse_args()
     
-    # Appelle la fonction pour générer les légendes avec les dossiers fournis en arguments
-    process_folder(args.input_folder, args.csv_folder, args.metadata_folder, args.output_folder, args.selection, args.size)
-
-    
-    # Appelle la fonction pour générer les légendes avec les dossiers fournis en arguments
-    process_folder(args.input_folder, args.csv_folder, args.metadata_folder, args.output_folder, args.selection, args.size)
+    # Appeler la fonction pour générer les légendes avec les arguments
+    process_folder(args.input_folder, args.csv_folder, args.metadata_folder, args.output_folder, args.selection, args.size, args.var)
