@@ -125,7 +125,7 @@ python simple_captions.py D:\SIR\T2\IXI\seg D:\SIR\T2\IXI\descriptions_simple .\
 ### 3. Dossier des Métadonnées
 
 Enfin, veillez à ne pas oublier d’inclure le dossier des métadonnées dans vos répertoires de travail.
-### 4. supprimer les liens logiques à la fin
+### 4. Supprimer les liens logiques à la fin
 
 si les liens logiques ne sont pas souhaitable dans les captions, utiliser le code `"delete_connectors.py"` Sur les captions générés. il faut seulemnt ajouter le lien de dossier captions dans `le chemin`:
 ```python
@@ -136,7 +136,7 @@ dossier_json = r"D:\SIR\T1\IBSR_OASIS\captions_3d_simple\captions_var_10"
 
 ---
 
-### modalite_speed.py
+### 5. Modalite_speed.py
 
 Ce script a pour objectif de corriger rapidement certaines informations dans des fichiers JSON générés précédemment. Plus précisément, il parcourt un répertoire contenant plusieurs sous-dossiers (par exemple, *captions_exhaustive*, *captions_selection*, *captions_size_10* et *captions_var_10*) et remplace dans le champ « captions » une modalité erronée par la modalité correcte. Pour optimiser la vitesse d’exécution, le script n’utilise pas d’arguments en ligne de commande ; tous les chemins sont définis directement dans le code. De plus, il exploite le **multithreading** pour traiter simultanément les différents sous-dossiers. Voici les points clés :
 
@@ -165,7 +165,88 @@ Pour augmenter encore la vitesse de traitement, le script utilise le **multiproc
 - **Traitement en parallèle** : La fonction `process_folder` parcourt le dossier d’images et utilise le module `multiprocessing.Pool` (avec 8 processus) pour lancer simultanément le traitement de plusieurs fichiers via la fonction `process_single_file`.
 - **Production de 4 fichiers par image** : Pour chaque image, quatre versions de légendes sont générées et enregistrées dans des sous-dossiers dédiés.
 
-Ce script a été adapté d’Abdérrahman Lichir, dont le travail minutieux – réalisé jusqu’à 3 heures du matin malgré quelques périodes d’instabilité – mérite d’être salué. Grâce à l’utilisation conjointe du multithreading et du multiprocessing, l’ensemble du traitement (couvrant neuf bibliothèques différentes telles que IBSR, IBSR_IXI, IBSR_Kirby, IBSR_OASIS, OASIS, IXI, Kirby, Kirby_IXI, Kirby_OASIS) a pu être achevé avant 17 heures. Les résultats seront ensuite remis à des camarades pour vérification et, si possible, un rendez-vous est envisagé demain pour finaliser la présentation.
+Ce script a été adapté de la version précédente. Grâce à l’utilisation conjointe du multithreading et du multiprocessing, l’ensemble du traitement (couvrant neuf bibliothèques différentes telles que IBSR, IBSR_IXI, IBSR_Kirby, IBSR_OASIS, OASIS, IXI, Kirby, Kirby_IXI, Kirby_OASIS) a pu être achevé avant 17 heures. Les résultats seront ensuite remis à des camarades pour vérification et, si possible, un rendez-vous est envisagé demain pour finaliser la présentation.
 
 --- 
 
+# Analyse statistique pour les bases de données
+
+## Description
+Cette partie consiste à analyser statistiquement les structures cérébrales pour chaque atlas à partir des fichiers CSV associés aux images au format nii.gz, qui contiennent des informations telles que l’ID du sujet, le label anatomique, le volume et le ratio volumique, en regroupant les données en six catégories (Male, Female, Minor, Senior, Adult, Overall) pour chaque atlas.
+Sur la base de ces statistiques, des boîtes à moustaches ont été générées pour visualiser les distributions des volumes, fournissant ainsi des informations clés pour la création de captions 3D, notamment en identifiant les structures qui présentent les variations les plus importantes.
+
+## Génération des Statistiques en Fichiers JSON
+
+### 1. Générer les statistiques d'information en fichiers JSON
+
+Avec l'aide des fichiers situés dans les dossiers `description`, `Anatomie_IBSR.csv` et `atlas_infos` (dans le metafolder), pour chaque base de données, lancez le script `statistiques_cerveux.py` avec la commande suivante (sous Windows):
+
+```bash
+python statistiques_cerveux.py path_to_inputfolder
+```
+
+**Exemple de lancement:**
+
+```bash
+python .\statistiques_cerveux.py .\SIR\FL\Kirby\descriptions\
+```
+
+Pour la sortie, les 6 fichiers JSON sont enregistrés dans le nouveau répertoire créé `analyse_statistics`:
+
+- `Male_statistics.json`
+- `Female_statistics.json`
+- `Minor_statistics.json`
+- `Adult_statistics.json`
+- `Senior_statistics.json`
+- `All_statistics.json`
+
+---
+
+### 2. Générer les statistiques d'information en fichiers JSON avec les informations structurelles sur la version simplifiée
+
+Cette partie est similaire à l'étape précédente. La différence est que l'on utilise les informations de structure simplifiée présentes dans `simplified_IBSR.csv`. Avec l'aide des fichiers situés dans les dossiers `description_simple`, `simplified_IBSR.csv` et `atlas_infos` (dans le metafolder), pour chaque base de données, lancez le script `statistiques_cerveux_simplified.py` avec la commande suivante (sous Windows):
+
+```bash
+python statistiques_cerveux_simplified.py path_to_inputfolder
+```
+
+**Exemple de lancement:**
+
+```bash
+python .\statistiques_cerveux_simplified.py .\SIR\FL\Kirby\descriptions_simple\
+```
+
+Pour la sortie, les 6 fichiers JSON sont enregistrés dans le nouveau répertoire créé `analyse_statistics_simplified`:
+
+- `Male_statistics.json`
+- `Female_statistics.json`
+- `Minor_statistics.json`
+- `Adult_statistics.json`
+- `Senior_statistics.json`
+- `All_statistics.json`
+
+# Convertisseur JSON en CSV - Analyse Statistique du Cerveau
+
+## Description
+
+Ce programme Python convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
+
+## Prérequis
+
+- Les fichiers JSON d'analyse statistique doivent être présents dans le dossier d'entrée.
+
+## Utilisation
+
+Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
+
+```bash
+python .\convertisseur.py path_input_folder
+```
+
+**Exemple d'exécution :**
+
+```bash
+python .\convertisseur.py .\SIR\FL\Kirby\analyse_statistcs
+```
+
+Les fichiers CSV générés seront placés dans le dossier `csv` qui se trouve dans le dossier d'entrée.
