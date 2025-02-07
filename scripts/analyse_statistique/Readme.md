@@ -21,7 +21,7 @@ Sur un système Windows, vous pouvez exécuter le programme avec la commande sui
 python .\boite_a_moustache.py path_input_folder
 ```
 
-# Convertisseur JSON en CSV - Analyse Statistique du Cerveau
+# Convertisseur JSON en CSV - Modification du format d'enregistrement des fichiers
 
 ## Description
 Ce programme Python convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
