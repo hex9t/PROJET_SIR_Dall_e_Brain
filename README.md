@@ -11,6 +11,22 @@ SIR/
 │   ├── Kirby/
 │   │   ├── brain/
 │   │   ├── NG/
+│   │   ├── seg/
+│   │   ├── seg_direct/
+│   │   ├── descriptions/
+│   │   ├── descriptions_simple/
+│   │   ├── captions_3d_simple/
+│   │   ├── captions_3d/
+│   │   ├── analyse_statistics/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
+│   │   ├── analyse_statistics_simplified/
+│   │   │   ├── csv/
+│   │   │   ├── boxplots/
+│   ├── Kirby_OASIS/
+│   │   ├── reg/
+│   │   ├── reg_brain/
+│   │   ├── seg/
 │   │   ├── descriptions/
 │   │   ├── descriptions_simple/
 │   │   ├── captions_3d_simple/
