@@ -226,16 +226,16 @@ Pour la sortie, les 6 fichiers JSON sont enregistrés dans le nouveau répertoir
 - `Senior_statistics.json`
 - `All_statistics.json`
 
-# Convertisseur JSON en CSV 
-## Description
+## Convertisseur JSON en CSV 
+### Description
 
 Ce programme Python `convertisseur.py` convertit les fichiers de données d'analyse statistique du cerveau au format JSON en fichiers CSV. Chaque fichier JSON contenant des informations sur les statistiques de différentes régions du cerveau est traité et converti en un fichier CSV. Ce programme est conçu pour être utilisé sur un dossier contenant plusieurs fichiers JSON.
 
-## Prérequis
+### Prérequis
 
 - Les fichiers JSON d'analyse statistique doivent être présents dans le dossier d'entrée.
 
-## Utilisation
+### Utilisation
 
 Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
 
@@ -251,13 +251,13 @@ python .\convertisseur.py .\SIR\FL\Kirby\analyse_statistcs
 
 Les fichiers CSV générés seront placés dans le dossier `csv` qui se trouve dans le dossier d'entrée.
 
-# Boîte à Moustache - Génération de Boxplots
+## Boîte à Moustache - Génération de Boxplots
 
-## Description
+### Description
 
 Ce programme Python `boite_a_moustache.py` génère des boîtes à moustache à partir des données contenues dans des fichiers JSON du dossier concernant les analyses statistiques. Chaque boxplot représente la distribution des volumes de données, avec les valeurs minimales, les quartiles, et les éventuels points aberrants.
 
-## Utilisation
+### Utilisation
 Sur un système Windows, vous pouvez exécuter le programme avec la commande suivante :
 
 ```bash
